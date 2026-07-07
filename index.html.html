@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gold on Mirror</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+  :root {
+    --blue: #0000ee;
+    --purple: #551a8b;
+    --red: #cc0000;
+    --ink: #000;
+    --paper: #fff;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Courier Prime', monospace;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  header .hint {
+    font-size: 12px;
+    color: var(--purple);
+  }
+
+  #stage-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    background: #fff;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  #controls {
+    border-top: 1px solid var(--ink);
+    padding: 10px 14px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    background: var(--paper);
+  }
+  .ctrl {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+  }
+  .ctrl label {
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ctrl label .val { color: var(--blue); }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--red);
+    margin: 0;
+  }
+  .row {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  button, .filebtn {
+    font-family: 'Courier Prime', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--paper);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  button:active, .filebtn:active { background: var(--blue); color: var(--paper); }
+  .filebtn { position: relative; overflow: hidden; }
+  .filebtn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  button.reset { color: var(--red); border-color: var(--red); }
+  button.reset:active { background: var(--red); color: var(--paper); }
+  .fname { font-size: 11px; color: var(--purple); align-self: center; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Gold on Mirror</h1>
+    <span class="hint">drag to pivot the light</span>
+  </header>
+
+  <div id="stage-wrap">
+    <canvas id="stage"></canvas>
+  </div>
+
+  <div id="controls">
+    <div class="ctrl">
+      <label>Warmth <span class="val" id="warmthVal"></span></label>
+      <input type="range" id="warmth" min="0" max="100" value="55">
+    </div>
+    <div class="ctrl">
+      <label>Highlight <span class="val" id="highlightVal"></span></label>
+      <input type="range" id="highlight" min="0" max="100" value="70">
+    </div>
+    <div class="ctrl">
+      <label>Glint spread <span class="val" id="spreadVal"></span></label>
+      <input type="range" id="spread" min="5" max="60" value="24">
+    </div>
+    <div class="row">
+      <label class="filebtn">Load sign (SVG / PNG)
+        <input type="file" id="file" accept=".svg,.png,image/svg+xml,image/png">
+      </label>
+      <button id="tiltBtn">Enable tilt</button>
+      <button id="recentre" style="display:none">Recentre</button>
+      <button class="reset" id="reset">Centre</button>
+      <span class="fname" id="fname">placeholder loaded</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Tunable constants (retune from reference photos) ----------------------
+const GOLD = {
+  // warm satin leaf, not chrome: deep amber -> rich gold -> burnished catch
+  shadow:   [150, 110, 45],   // amber where the leaf turns away
+  mid:      [206, 168, 74],   // rich gold body
+  highlight:[240, 224, 150],  // warm burnished catch (not white)
+  deep:     [110, 78,  30],   // deepest turn
+  grain: 0.5,                 // leaf stipple strength (0..1)
+};
+const BLACK = {
+  base:  [16, 16, 16],        // matte black paint
+  sheen: [70, 70, 74],        // faint top sheen on the black
+};
+const MIRROR = {
+  top:    [232, 224, 206],    // light antique champagne, upper
+  bottom: [214, 202, 178],    // warmer, lower
+};
+const FOXING = {
+  speckleDensity: 0.0016,     // pepper dots per pixel
+  speckleLight:  [150, 124, 80],
+  speckleDark:   [96, 72, 40],
+  bloomCount: 12,             // large desilvered patches
+  bloom:  [243, 237, 223],    // pale clouded silver
+  rim:    [92, 72, 44],       // dark speckle around a bloom
+};
+const GLINT_TRAVEL = 0.9;     // how far drag pushes the highlight (0..1)
+// ----------------------------------------------------------------------------
+
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const wrap = document.getElementById('stage-wrap');
+
+let dpr = Math.max(1, window.devicePixelRatio || 1);
+let W = 0, H = 0;
+
+// sign as an alpha mask on its own canvas
+let signCanvas = null;   // grayscale/alpha source, natural size
+let signW = 0, signH = 0;
+let signScale = 1;
+
+// position of sign centre in stage coords (0..1 of stage)
+let pos = { x: 0.5, y: 0.5 };
+let dragging = false;
+let dragOff = { x: 0, y: 0 };
+
+// device tilt light (declared early: draw() runs during slider init)
+let tiltOn = false;
+let light = { x: 0, y: 0 };
+
+const params = {
+  warmth: 0.55,
+  highlight: 0.70,
+  spread: 0.24,
+  reflect: 0.45,
+};
+
+function rgb(a){ return `rgb(${a[0]},${a[1]},${a[2]})`; }
+function mix(a, b, t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
+
+function resize(){
+  const r = wrap.getBoundingClientRect();
+  dpr = Math.max(1, window.devicePixelRatio || 1);
+  W = Math.round(r.width);
+  H = Math.round(r.height);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  fitSign();
+  buildFoxing();
+  draw();
+}
+
+function fitSign(){
+  if (!signCanvas) return;
+  // fit within 60% width and 80% height, so tall signs read large
+  const targetW = W * 0.60;
+  const targetH = H * 0.80;
+  signScale = Math.min(targetW / signW, targetH / signH);
+}
+
+// Build the placeholder sign mask: GOLD in yellow (leaf), LEAF in black (paint)
+function buildPlaceholder(){
+  const pad = 40;
+  const fontPx = 200;
+  const gap = 40;
+  const c = document.createElement('canvas');
+  const cx = c.getContext('2d');
+  const font = `700 ${fontPx}px 'Courier Prime', monospace`;
+  cx.font = font;
+  const w1 = cx.measureText("GOLD").width;
+  const w2 = cx.measureText("LEAF").width;
+  c.width = Math.ceil(w1 + gap + w2) + pad*2;
+  c.height = fontPx + pad*2;
+  cx.font = font;
+  cx.textBaseline = 'middle';
+  cx.textAlign = 'left';
+  const midY = c.height/2;
+  cx.fillStyle = '#f2c200';                 // yellow -> becomes gold leaf
+  cx.fillText("GOLD", pad, midY);
+  cx.fillStyle = '#000';                     // black -> matte paint
+  cx.fillText("LEAF", pad + w1 + gap, midY);
+  setSign(c);
+  document.getElementById('fname').textContent = 'placeholder loaded';
+}
+
+let goldMask = null;      // opaque where the gold leaf goes
+let blackMask = null;     // opaque where matte black paint goes (may be null)
+
+function setSign(sourceCanvasOrImage){
+  const iw = sourceCanvasOrImage.width || sourceCanvasOrImage.naturalWidth;
+  const ih = sourceCanvasOrImage.height || sourceCanvasOrImage.naturalHeight;
+  const c = document.createElement('canvas');
+  c.width = iw; c.height = ih;
+  const cx = c.getContext('2d');
+  cx.drawImage(sourceCanvasOrImage, 0, 0, iw, ih);
+  signCanvas = c;
+  signW = iw; signH = ih;
+  buildMasks(cx, iw, ih);
+  fitSign();
+  buildFoxing();
+  draw();
+}
+
+// Split the artwork: yellow -> gold leaf, dark -> black paint.
+// If there's little/no yellow, treat the whole silhouette as gold (SVG stencils).
+function buildMasks(cx, iw, ih){
+  const data = cx.getImageData(0, 0, iw, ih).data;
+  const gold = cx.createImageData(iw, ih);
+  const black = cx.createImageData(iw, ih);
+  let yellowCount = 0, blackCount = 0, opaque = 0;
+
+  for (let i = 0; i < data.length; i += 4){
+    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+    if (a < 128) continue;
+    opaque++;
+    const isDark = (r + g + b) / 3 < 70;
+    const isWhite = r > 205 && g > 205 && b > 205;
+    const isYellow = r > 120 && g > 90 && (r + g) / 2 > b + 22 && !isDark;
+    if (isYellow){ gold.data[i+3] = 255; yellowCount++; }
+    else if (isDark){ black.data[i+3] = 255; blackCount++; }
+    else if (!isWhite){ gold.data[i+3] = 255; } // mid tones lean gold
+  }
+
+  const gc = document.createElement('canvas'); gc.width = iw; gc.height = ih;
+  const bc = document.createElement('canvas'); bc.width = iw; bc.height = ih;
+
+  if (yellowCount < opaque * 0.02){
+    // silhouette mode: no real yellow, so all opaque pixels become gold
+    const gctx = gc.getContext('2d');
+    gctx.drawImage(signCanvas, 0, 0);
+    // keep only alpha as white
+    gctx.globalCompositeOperation = 'source-in';
+    gctx.fillStyle = '#fff'; gctx.fillRect(0, 0, iw, ih);
+    goldMask = gc; blackMask = null;
+  } else {
+    // fill masks white so they act as clean alpha stencils
+    for (let i = 0; i < gold.data.length; i += 4){
+      if (gold.data[i+3]){ gold.data[i]=gold.data[i+1]=gold.data[i+2]=255; }
+      if (black.data[i+3]){ black.data[i]=black.data[i+1]=black.data[i+2]=255; }
+    }
+    gc.getContext('2d').putImageData(gold, 0, 0);
+    goldMask = gc;
+    blackMask = blackCount > opaque * 0.01 ? (bc.getContext('2d').putImageData(black, 0, 0), bc) : null;
+  }
+}
+
+// ---- Leaf stipple: subtle grain baked once, tiled over the gold -----------
+let grainTile = document.createElement('canvas');
+function buildGrain(){
+  grainTile.width = 180; grainTile.height = 180;
+  const g = grainTile.getContext('2d');
+  const id = g.createImageData(180, 180);
+  for (let i = 0; i < id.data.length; i += 4){
+    const v = Math.random() < 0.5 ? 0 : 255;
+    id.data[i] = id.data[i+1] = id.data[i+2] = v;
+    id.data[i+3] = Math.random() * 34;   // faint
+  }
+  g.putImageData(id, 0, 0);
+}
+buildGrain();
+
+// ---- Antique mirror foxing: built once per resize, stable while dragging ---
+let foxingCanvas = document.createElement('canvas');
+function buildFoxing(){
+  // size the antiquing to the sign panel so the mirror matches the artwork
+  let fw = W, fh = H;
+  if (signCanvas){
+    fw = Math.max(1, Math.round(signW * signScale));
+    fh = Math.max(1, Math.round(signH * signScale));
+  }
+  foxingCanvas.width = fw; foxingCanvas.height = fh;
+  const fx = foxingCanvas.getContext('2d');
+  fx.clearRect(0, 0, fw, fh);
+
+  // fine golden pepper speckle across the whole surface
+  const count = Math.round(fw * fh * FOXING.speckleDensity);
+  for (let i = 0; i < count; i++){
+    const x = Math.random()*fw, y = Math.random()*fh;
+    const c = mix(FOXING.speckleLight, FOXING.speckleDark, Math.random());
+    fx.fillStyle = `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${(0.05 + Math.random()*0.13).toFixed(3)})`;
+    fx.beginPath(); fx.arc(x, y, Math.random()*1.3 + 0.2, 0, 7); fx.fill();
+  }
+
+  // large irregular desilvered blooms (the ragged pale clouds)
+  for (let b = 0; b < FOXING.bloomCount; b++){
+    const bx = Math.random()*fw, by = Math.random()*fh;
+    const R = (0.05 + Math.random()*0.10) * Math.min(fw, fh) * 1.7;
+    const lobes = 2 + (Math.random()*3 | 0);
+    for (let l = 0; l < lobes; l++){
+      const ox = bx + (Math.random()-0.5)*R*0.8;
+      const oy = by + (Math.random()-0.5)*R*0.8;
+      const rr = R * (0.5 + Math.random()*0.6);
+      const g = fx.createRadialGradient(ox, oy, rr*0.1, ox, oy, rr);
+      const p = FOXING.bloom;
+      g.addColorStop(0, `rgba(${p[0]},${p[1]},${p[2]},${(0.45 + Math.random()*0.30).toFixed(3)})`);
+      g.addColorStop(0.7, `rgba(${p[0]},${p[1]},${p[2]},0.10)`);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      fx.fillStyle = g;
+      fx.beginPath(); fx.arc(ox, oy, rr, 0, 7); fx.fill();
+    }
+    // dark speckle concentrated around the bloom edge
+    const rim = 40 + (Math.random()*45 | 0);
+    for (let s = 0; s < rim; s++){
+      const ang = Math.random()*7, rad = R*(0.65 + Math.random()*0.45);
+      const c = FOXING.rim;
+      fx.fillStyle = `rgba(${c[0]},${c[1]},${c[2]},${(0.05 + Math.random()*0.13).toFixed(3)})`;
+      fx.beginPath();
+      fx.arc(bx + Math.cos(ang)*rad, by + Math.sin(ang)*rad, Math.random()*1.5 + 0.3, 0, 7);
+      fx.fill();
+    }
+  }
+}
+
+// ---- Sign render: matte black areas + satin gold leaf with a moving catch --
+let goldBuf = document.createElement('canvas');
+let goldCtx = goldBuf.getContext('2d');
+let goldLayer = document.createElement('canvas');
+let goldLayerCtx = goldLayer.getContext('2d');
+
+function renderGold(glint){
+  // glint: {x:-1..1, y:-1..1} drag offset -> moves the catch
+  const w = Math.max(1, Math.round(signW * signScale));
+  const h = Math.max(1, Math.round(signH * signScale));
+  goldBuf.width = w; goldBuf.height = h;
+  goldCtx.clearRect(0, 0, w, h);
+
+  // --- matte black paint areas ---
+  if (blackMask){
+    goldCtx.globalCompositeOperation = 'source-over';
+    goldCtx.drawImage(blackMask, 0, 0, w, h);
+    goldCtx.globalCompositeOperation = 'source-in';
+    const bg = goldCtx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, rgb(mix(BLACK.base, BLACK.sheen, 0.5)));
+    bg.addColorStop(0.14, rgb(BLACK.base));
+    bg.addColorStop(1, 'rgb(2,2,2)');
+    goldCtx.fillStyle = bg;
+    goldCtx.fillRect(0, 0, w, h);
+    goldCtx.globalCompositeOperation = 'source-over';
+  }
+
+  // --- satin gold leaf areas, built on their own layer ---
+  goldLayer.width = w; goldLayer.height = h;
+  const gl = goldLayerCtx;
+  gl.clearRect(0, 0, w, h);
+  gl.globalCompositeOperation = 'source-over';
+  gl.drawImage(goldMask, 0, 0, w, h);
+
+  // two-tone leaf body: deep amber on the turned-away side, bright on the catch
+  gl.globalCompositeOperation = 'source-in';
+  const warm = params.warmth;
+  const mid = mix(GOLD.mid, [GOLD.mid[0]+16, GOLD.mid[1]-6, GOLD.mid[2]-16], warm);
+  const bx = w * (0.5 - glint.x * 0.4), by = h * (0.5 - glint.y * 0.4);
+  const body = gl.createLinearGradient(bx - w, by - h, bx + w, by + h);
+  body.addColorStop(0.00, rgb(GOLD.deep));
+  body.addColorStop(0.35, rgb(GOLD.shadow));
+  body.addColorStop(0.62, rgb(mid));
+  body.addColorStop(1.00, rgb(mix(mid, GOLD.highlight, 0.5)));
+  gl.fillStyle = body;
+  gl.fillRect(0, 0, w, h);
+
+  // soft satin catch (warm, wide, low peak, not a chrome streak)
+  gl.globalCompositeOperation = 'source-atop';
+  const spread = Math.max(0.12, params.spread * 1.6);
+  const centre = 0.5 + glint.x * 0.5 * GLINT_TRAVEL;
+  const tilt = glint.y * 0.3;
+  const sg = gl.createLinearGradient(0, h*(0.5 - tilt), w, h*(0.5 + tilt));
+  const a = Math.min(0.85, 0.22 + params.highlight * 0.6);
+  const hi = `rgba(${GOLD.highlight[0]},${GOLD.highlight[1]},${GOLD.highlight[2]},${a})`;
+  const c0 = Math.max(0, centre - spread), c1 = Math.min(1, centre + spread);
+  sg.addColorStop(0, 'rgba(0,0,0,0)');
+  if (c0 > 0) sg.addColorStop(c0, 'rgba(0,0,0,0)');
+  sg.addColorStop(Math.min(0.999, Math.max(0.001, centre)), hi);
+  if (c1 < 1) sg.addColorStop(c1, 'rgba(0,0,0,0)');
+  sg.addColorStop(1, 'rgba(0,0,0,0)');
+  gl.fillStyle = sg;
+  gl.fillRect(0, 0, w, h);
+
+  // leaf stipple grain, kept inside the gold
+  if (GOLD.grain > 0){
+    gl.globalCompositeOperation = 'source-atop';
+    gl.globalAlpha = GOLD.grain * 0.6;
+    gl.fillStyle = gl.createPattern(grainTile, 'repeat');
+    gl.fillRect(0, 0, w, h);
+    gl.globalAlpha = 1;
+  }
+  gl.globalCompositeOperation = 'source-over';
+
+  goldCtx.drawImage(goldLayer, 0, 0);
+  return { buf: goldBuf, w, h };
+}
+
+// ---- Stage ----------------------------------------------------------------
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff';          // page around the mirror panel
+  ctx.fillRect(0, 0, W, H);
+
+  if (!signCanvas) return;
+
+  // the gilded design
+  const { buf } = renderGold(light);
+
+  // mirror panel: exactly the artwork's rectangle, centred on the stage
+  const pw = Math.max(1, Math.round(signW * signScale));
+  const ph = Math.max(1, Math.round(signH * signScale));
+  const px = Math.round(W/2 - pw/2);
+  const py = Math.round(H/2 - ph/2);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(px, py, pw, ph);
+  ctx.clip();
+
+  // champagne ground
+  const mg = ctx.createLinearGradient(0, py, 0, py + ph);
+  mg.addColorStop(0, rgb(MIRROR.top));
+  mg.addColorStop(1, rgb(MIRROR.bottom));
+  ctx.fillStyle = mg;
+  ctx.fillRect(px, py, pw, ph);
+
+  // gleam pivots about the middle of the sheet; drag moves the light
+  const gcx = px + pw/2 + light.x * pw * 0.55;
+  const gcy = py + ph/2 + light.y * ph * 0.55;
+  const gr = Math.max(pw, ph) * 0.7;
+  const hg = ctx.createRadialGradient(gcx, gcy, 0, gcx, gcy, gr);
+  hg.addColorStop(0, 'rgba(255,252,240,0.34)');
+  hg.addColorStop(0.5, 'rgba(255,252,240,0.08)');
+  hg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = hg;
+  ctx.fillRect(px, py, pw, ph);
+
+  // antiquing, sized to the panel
+  if (foxingCanvas.width) ctx.drawImage(foxingCanvas, px, py);
+  ctx.restore();
+
+  // thin mirror edge
+  ctx.strokeStyle = 'rgba(120,120,120,0.45)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(px + 0.5, py + 0.5, pw - 1, ph - 1);
+
+  // the gilded design sits on the panel (no reflection)
+  ctx.drawImage(buf, px, py, pw, ph);
+}
+
+// ---- Interaction ----------------------------------------------------------
+function pointOnSign(px, py){
+  if (!signCanvas) return false;
+  const w = signW * signScale, h = signH * signScale;
+  const cx = pos.x * W, cy = pos.y * H;
+  return px >= cx - w/2 && px <= cx + w/2 && py >= cy - h/2 && py <= cy + h/2;
+}
+
+function getXY(e){
+  const r = canvas.getBoundingClientRect();
+  const t = e.touches ? e.touches[0] : e;
+  return { x: t.clientX - r.left, y: t.clientY - r.top };
+}
+
+// drag pivots the light about the centre of the sheet
+function setLightFromPoint(p){
+  light.x = Math.max(-1, Math.min(1, (p.x - W/2) / (W * 0.35)));
+  light.y = Math.max(-1, Math.min(1, (p.y - H/2) / (H * 0.35)));
+}
+
+function down(e){
+  dragging = true;
+  setLightFromPoint(getXY(e));
+  draw();
+  e.preventDefault();
+}
+function move(e){
+  if (!dragging) return;
+  setLightFromPoint(getXY(e));
+  draw();
+  e.preventDefault();
+}
+function up(){ dragging = false; }
+
+canvas.addEventListener('mousedown', down);
+window.addEventListener('mousemove', move);
+window.addEventListener('mouseup', up);
+canvas.addEventListener('touchstart', down, { passive: false });
+canvas.addEventListener('touchmove', move, { passive: false });
+window.addEventListener('touchend', up);
+
+// ---- File load -------------------------------------------------------------
+document.getElementById('file').addEventListener('change', (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      // rasterise SVG/PNG at a crisp size
+      const maxDim = 1400;
+      let iw = img.naturalWidth || 800, ih = img.naturalHeight || 300;
+      const s = Math.min(1, maxDim / Math.max(iw, ih));
+      const c = document.createElement('canvas');
+      c.width = Math.round(iw * s * 2);   // 2x for crispness
+      c.height = Math.round(ih * s * 2);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      setSign(c);
+      document.getElementById('fname').textContent = f.name;
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+// ---- Sliders ---------------------------------------------------------------
+function bind(id, key, fmt, scale){
+  const el = document.getElementById(id);
+  const out = document.getElementById(id + 'Val');
+  const upd = () => {
+    const raw = +el.value;
+    params[key] = scale ? scale(raw) : raw/100;
+    out.textContent = fmt ? fmt(raw) : raw;
+    draw();
+  };
+  el.addEventListener('input', upd);
+  upd();
+}
+bind('warmth', 'warmth', v => v + '%');
+bind('highlight', 'highlight', v => v + '%');
+bind('spread', 'spread', v => v + '%', v => v/100);
+
+document.getElementById('reset').addEventListener('click', () => {
+  light = { x: 0, y: 0 };
+  draw();
+});
+
+// ---- Device tilt: the accelerometer drives the light -----------------------
+let beta0 = null, gamma0 = null;     // neutral hold (centre of the sheet)
+let rawBeta = 0, rawGamma = 0;
+const TILT_RANGE = 30;               // degrees of tilt for a full sweep
+let drawPending = false;
+
+function scheduleDraw(){
+  if (drawPending) return;
+  drawPending = true;
+  requestAnimationFrame(() => { drawPending = false; draw(); });
+}
+
+function onOrient(e){
+  if (e.gamma == null || e.beta == null) return;
+  rawGamma = e.gamma; rawBeta = e.beta;
+  if (gamma0 == null){ gamma0 = e.gamma; beta0 = e.beta; }  // calibrate to centre
+  light.x = Math.max(-1, Math.min(1, (e.gamma - gamma0) / TILT_RANGE));
+  light.y = Math.max(-1, Math.min(1, (e.beta - beta0) / TILT_RANGE));
+  scheduleDraw();
+}
+
+const tiltBtn = document.getElementById('tiltBtn');
+const recentreBtn = document.getElementById('recentre');
+const statusEl = document.getElementById('fname');
+
+async function enableTilt(){
+  try {
+    const DOE = window.DeviceOrientationEvent;
+    if (DOE && typeof DOE.requestPermission === 'function'){
+      const res = await DOE.requestPermission();       // iOS: needs this tap
+      if (res !== 'granted'){ statusEl.textContent = 'tilt blocked, open in Safari'; return; }
+    }
+    window.addEventListener('deviceorientation', onOrient, true);
+    tiltOn = true;
+    gamma0 = null; beta0 = null;                        // recentre on the current hold
+    tiltBtn.textContent = 'Tilt on';
+    recentreBtn.style.display = '';
+    statusEl.textContent = 'tilt live: hold level, catch sits centre';
+    // if no event arrives shortly, the environment likely blocks motion
+    setTimeout(() => { if (gamma0 == null) statusEl.textContent = 'no motion data, open in Safari'; }, 1200);
+  } catch (err){
+    statusEl.textContent = 'tilt unavailable here';
+  }
+}
+
+function disableTilt(){
+  window.removeEventListener('deviceorientation', onOrient, true);
+  tiltOn = false;
+  tiltBtn.textContent = 'Enable tilt';
+  recentreBtn.style.display = 'none';
+  statusEl.textContent = 'tilt off';
+  draw();
+}
+
+tiltBtn.addEventListener('click', () => { tiltOn ? disableTilt() : enableTilt(); });
+recentreBtn.addEventListener('click', () => {
+  gamma0 = rawGamma; beta0 = rawBeta;                   // current hold becomes centre
+  light.x = 0; light.y = 0;
+  draw();
+});
+
+// ---- Boot ------------------------------------------------------------------
+window.addEventListener('resize', resize);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => { buildPlaceholder(); resize(); });
+}
+buildPlaceholder();
+resize();
+</script>
+</body>
+</html>
