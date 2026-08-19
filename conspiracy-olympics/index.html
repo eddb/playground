@@ -490,12 +490,37 @@
   .cutoff::before,.cutoff::after{content:"— ";}
   .cutoff::after{content:" —";}
 
+  .reveal-card{
+    background:var(--paper);
+    border:2.5px solid var(--accent);
+    padding:30px 24px;
+    text-align:center;
+    box-shadow:0 10px 26px var(--shadow);
+  }
+  .reveal-label{margin-bottom:14px;}
+  .reveal-name{
+    font-family:"Special Elite", monospace;
+    font-size:.95rem;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+  }
+  .reveal-topic{
+    font-family:"Special Elite", monospace;
+    font-size:clamp(1.7rem, 6vw, 2.5rem);
+    color:var(--accent);
+    margin-top:8px;
+    line-height:1.2;
+  }
+  .reveal-prompt input[type="text"]{max-width:280px; margin:0 auto;}
   .assign-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
     gap:14px;
     margin-top:16px;
   }
+  .assign-grid.others .assign-card{opacity:.82;}
+  .assign-grid.others .assign-name{font-size:1rem;}
   .assign-card{
     border:1px solid var(--border-strong);
     padding:14px 16px;
@@ -806,14 +831,43 @@
 
     var assignSection;
     if (state.assignments && state.assignments.length){
-      var cards = state.assignments.map(function(a){
+      var myRevealName = localStorage.getItem(NAME_KEY) || "";
+      var mine = state.assignments.find(function(a){
+        return a.name.toLowerCase() === myRevealName.toLowerCase();
+      });
+
+      var revealBlock;
+      if (mine){
+        revealBlock = '' +
+          '<div class="reveal-card">' +
+            '<span class="redact-bar reveal-label">Your Topic</span>' +
+            '<div class="reveal-name">' + escapeHtml(mine.name) + '</div>' +
+            '<div class="reveal-topic">' + escapeHtml(TOPIC_MAP[mine.topicId] || mine.topicId) + '</div>' +
+          '</div>';
+      } else {
+        revealBlock = '' +
+          '<div class="card reveal-prompt">' +
+            '<div class="redact-bar field-label">Who Are You?</div>' +
+            '<input type="text" id="reveal-name-input" placeholder="First name" value="' + escapeHtml(myRevealName) + '">' +
+            '<button class="stamp" id="reveal-btn" type="button" style="margin-top:14px;">Reveal My Topic</button>' +
+            '<div id="reveal-message"></div>' +
+          '</div>';
+      }
+
+      var others = state.assignments.filter(function(a){
+        return !mine || a.name.toLowerCase() !== mine.name.toLowerCase();
+      });
+      var cards = others.map(function(a){
         return '<div class="assign-card">' +
           '<div class="assign-name">' + escapeHtml(a.name) + '</div>' +
           '<div class="assign-topic">' + escapeHtml(TOPIC_MAP[a.topicId] || a.topicId) + '</div>' +
           '</div>';
       }).join("");
+
       assignSection = '' +
-        '<div class="assign-grid">' + cards + '</div>' +
+        revealBlock +
+        '<p class="section-sub" style="margin-top:20px;">' + (mine ? "Everyone Else&rsquo;s Topics" : "All Assignments") + '</p>' +
+        '<div class="assign-grid others">' + cards + '</div>' +
         '<div class="form-footer" style="border-top:none; margin-top:16px; padding-top:0;">' +
           '<span class="section-sub" style="margin:0;">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</span>' +
           '<button class="ghost" id="reshuffle-btn" type="button">Re-Shuffle</button>' +
@@ -933,6 +987,28 @@
         if (confirm("Re-shuffle will overwrite the current topic assignments for everyone. Continue?")){
           assignTopics();
         }
+      });
+    }
+
+    var revealBtn = document.getElementById('reveal-btn');
+    if (revealBtn){
+      revealBtn.addEventListener('click', function(){
+        var input = document.getElementById('reveal-name-input');
+        var name = (input.value || "").trim();
+        var slot = document.getElementById('reveal-message');
+        if (!name){
+          if (slot) slot.innerHTML = '<p class="notice error">Enter your first name.</p>';
+          return;
+        }
+        var match = state.assignments && state.assignments.find(function(a){
+          return a.name.toLowerCase() === name.toLowerCase();
+        });
+        if (!match){
+          if (slot) slot.innerHTML = '<p class="notice error">No assignment found for "' + escapeHtml(name) + '" — check it matches the name you voted with.</p>';
+          return;
+        }
+        localStorage.setItem(NAME_KEY, match.name);
+        render();
       });
     }
   }
