@@ -359,36 +359,6 @@
   button.stamp:disabled::after{display:none;}
   button.stamp:not(:disabled):active{transform:rotate(-1.3deg) scale(.96);}
 
-  button.ghost{
-    position:relative;
-    font-family:"Special Elite", monospace;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-    font-size:.74rem;
-    background:transparent;
-    color:var(--ink-dim);
-    border:2px solid var(--ink-dim);
-    border-radius:3px;
-    padding:9px 18px;
-    cursor:pointer;
-    transform:rotate(1.1deg);
-    isolation:isolate;
-  }
-  button.ghost::before{
-    content:"";
-    position:absolute;
-    inset:-2.5px;
-    border:1px solid var(--ink-dim);
-    border-radius:4px;
-    opacity:.45;
-    transform:rotate(-1.5deg);
-    pointer-events:none;
-  }
-  button.ghost:hover{color:var(--ink); border-color:var(--ink);}
-  button.ghost:hover::before{border-color:var(--ink);}
-  button.ghost:disabled{opacity:.4; cursor:not-allowed;}
-  button.ghost:active{transform:rotate(1.1deg) scale(.96);}
-
   .notice{
     margin-top:14px;
     font-size:.88rem;
@@ -673,6 +643,11 @@
   var MAX_VOTES = 8;
   var TARGET_PEOPLE = 8;
   var NAME_KEY = "conspiracyOlympicsName";
+  var ADMIN_NAME = "edd";
+
+  function isAdmin(){
+    return (localStorage.getItem(NAME_KEY) || "").trim().toLowerCase() === ADMIN_NAME;
+  }
 
   function doodleSvg(viewBox, basePath, grainPath, wrapperClass, opts){
     opts = opts || {};
@@ -868,14 +843,13 @@
         revealBlock +
         '<p class="section-sub" style="margin-top:20px;">' + (mine ? "Everyone Else&rsquo;s Topics" : "All Assignments") + '</p>' +
         '<div class="assign-grid others">' + cards + '</div>' +
-        '<div class="form-footer" style="border-top:none; margin-top:16px; padding-top:0;">' +
-          '<span class="section-sub" style="margin:0;">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</span>' +
-          '<button class="ghost" id="reshuffle-btn" type="button">Re-Shuffle</button>' +
-        '</div>';
-    } else {
+        '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>';
+    } else if (isAdmin()){
       assignSection = '' +
         '<p class="section-sub" style="margin-top:0;">Randomly hand each agent one of the 8 shortlisted theories.</p>' +
         '<button class="stamp" id="assign-btn" type="button" style="margin-top:14px;">Randomly Assign Topics</button>';
+    } else {
+      assignSection = '<p class="section-sub" style="margin-top:0;">Waiting for the organiser to assign topics.</p>';
     }
 
     return '' +
@@ -979,15 +953,6 @@
     var assignBtn = document.getElementById('assign-btn');
     if (assignBtn){
       assignBtn.addEventListener('click', assignTopics);
-    }
-
-    var reshuffleBtn = document.getElementById('reshuffle-btn');
-    if (reshuffleBtn){
-      reshuffleBtn.addEventListener('click', function(){
-        if (confirm("Re-shuffle will overwrite the current topic assignments for everyone. Continue?")){
-          assignTopics();
-        }
-      });
     }
 
     var revealBtn = document.getElementById('reveal-btn');
