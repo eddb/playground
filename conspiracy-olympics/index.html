@@ -592,22 +592,25 @@
   // "Realtime Database" (test mode is fine), then Project Settings > your
   // web app > paste the config object it gives you here.
   var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT"
+    apiKey: "AIzaSyDrbLHnvhhu_XYcyXO2Om8fN4bff8QkxOo",
+    authDomain: "tear-7c4ae.firebaseapp.com",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "tear-7c4ae",
+    storageBucket: "tear-7c4ae.firebasestorage.app",
+    messagingSenderId: "1001513131517",
+    appId: "1:1001513131517:web:f5e3911cf1e06b68a70d94"
   };
 
-  if (firebaseConfig.apiKey === "YOUR_API_KEY"){
+  if (firebaseConfig.databaseURL === "YOUR_DATABASE_URL"){
     document.getElementById("root").innerHTML =
       '<div class="card setup-card">' +
-        '<p class="section-title redact-bar">Setup Needed</p>' +
-        '<p>This page needs a free Firebase project so votes sync between everyone. It only takes a couple of minutes:</p>' +
+        '<p class="section-title redact-bar">One Step Left</p>' +
+        '<p>Your Firebase project is registered, but it needs a <b>Realtime Database</b> turned on before votes can be saved:</p>' +
         '<ol>' +
-          '<li>Go to <code>console.firebase.google.com</code> and create a project (no billing needed).</li>' +
-          '<li>In the project, open <b>Build &rarr; Realtime Database</b> and click <b>Create Database</b> (choose "test mode").</li>' +
-          '<li>Click the gear icon &rarr; <b>Project settings</b>, scroll to "Your apps", click the <b>&lt;/&gt;</b> (web) icon to register a web app, and copy the <code>firebaseConfig</code> object it shows you.</li>' +
-          '<li>Open <code>conspiracy-olympics/index.html</code> in this repo and paste those values into the <code>firebaseConfig</code> object near the top of the script, replacing the <code>YOUR_...</code> placeholders.</li>' +
+          '<li>Go to <code>console.firebase.google.com</code> and open your <b>tear-7c4ae</b> project.</li>' +
+          '<li>In the left sidebar, open <b>Build &rarr; Realtime Database</b> and click <b>Create Database</b> (choose "test mode" when asked about rules).</li>' +
+          '<li>Once it&rsquo;s created, the console shows a URL at the top like <code>https://tear-7c4ae-default-rtdb.europe-west1.firebasedatabase.app</code> &mdash; copy that exact URL.</li>' +
+          '<li>Open <code>conspiracy-olympics/index.html</code> in this repo and replace <code>YOUR_DATABASE_URL</code> in the <code>firebaseConfig</code> object with it.</li>' +
           '<li>Commit, push, and reload this page.</li>' +
         '</ol>' +
         '<p class="section-sub">Test-mode rules allow anyone with the link to read/write for 30 days — fine for a weekend trip with 8 mates. Lock the rules down afterwards if you keep using it.</p>' +
