@@ -1031,7 +1031,9 @@
 
   db.ref('submissions').on('value', function(snap){
     var val = snap.val() || {};
-    state.submissions = Object.keys(val).map(function(k){ return val[k]; });
+    state.submissions = Object.keys(val)
+      .map(function(k){ return val[k]; })
+      .filter(function(s){ return !/test/i.test(s.name); });
     render();
   });
 
