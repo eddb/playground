@@ -773,8 +773,9 @@
   function renderDossier(){
     var n = state.submissions.length;
     var votesComplete = n >= TARGET_PEOPLE;
+    var previewing = !votesComplete && isAdmin();
 
-    if (!votesComplete){
+    if (!votesComplete && !previewing){
       var pct = Math.min(100, Math.round((n / TARGET_PEOPLE) * 100));
       var rosterChips = state.submissions.map(function(s){
         return '<span class="chip">' + DOODLE_CHECK + escapeHtml(s.name) + '</span>';
@@ -847,10 +848,12 @@
         '<p class="section-sub" style="margin-top:20px;">' + (mine ? "Everyone Else&rsquo;s Topics" : "All Assignments") + '</p>' +
         '<div class="assign-grid others">' + cards + '</div>' +
         '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>';
-    } else if (isAdmin()){
+    } else if (isAdmin() && votesComplete){
       assignSection = '' +
         '<p class="section-sub" style="margin-top:0;">Randomly hand each agent one of the 8 shortlisted theories.</p>' +
         '<button class="stamp" id="assign-btn" type="button" style="margin-top:14px;">Randomly Assign Topics</button>';
+    } else if (isAdmin()){
+      assignSection = '<p class="section-sub" style="margin-top:0;">Shuffle unlocks once all ' + TARGET_PEOPLE + ' agents have filed (' + n + ' so far) — this is just a preview.</p>';
     } else {
       assignSection = '<p class="section-sub" style="margin-top:0;">Waiting for the organiser to assign topics.</p>';
     }
@@ -859,7 +862,9 @@
       '<section class="view" id="view-dossier">' +
         '<div class="card">' +
           '<p class="section-title redact-bar">Standings</p>' +
-          '<p class="section-sub" style="margin-top:0;">All ' + TARGET_PEOPLE + ' agents filed &middot; final tally</p>' +
+          (previewing
+            ? '<p class="section-sub" style="margin-top:0;">Admin preview &mdash; only ' + n + ' of ' + TARGET_PEOPLE + ' agents have filed, this will change.</p>'
+            : '<p class="section-sub" style="margin-top:0;">All ' + TARGET_PEOPLE + ' agents filed &middot; final tally</p>') +
           rows +
         '</div>' +
         '<div class="card">' +
