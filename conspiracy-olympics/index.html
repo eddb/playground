@@ -681,6 +681,14 @@
     return slug || ("agent-" + Math.random().toString(36).slice(2, 8));
   }
 
+  function tieHash(str){
+    var h = 0;
+    for (var i = 0; i < str.length; i++){
+      h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+    }
+    return h;
+  }
+
   function tally(state){
     var counts = {};
     TOPICS.forEach(function(t){ counts[t.id] = 0; });
@@ -689,12 +697,12 @@
         if (counts.hasOwnProperty(id)) counts[id]++;
       });
     });
-    var ranked = TOPICS.map(function(t, i){
-      return {id:t.id, label:t.label, count:counts[t.id], order:i};
+    var ranked = TOPICS.map(function(t){
+      return {id:t.id, label:t.label, count:counts[t.id], tieKey:tieHash(t.id)};
     });
     ranked.sort(function(a,b){
       if (b.count !== a.count) return b.count - a.count;
-      return a.order - b.order;
+      return a.tieKey - b.tieKey;
     });
     return ranked;
   }
