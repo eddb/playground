@@ -856,10 +856,13 @@
         revealBlock +
         '<p class="section-sub" style="margin-top:20px;">' + (mine ? "Everyone Else&rsquo;s Topics" : "All Assignments") + '</p>' +
         '<div class="assign-grid others">' + cards + '</div>' +
-        '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>';
+        '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>' +
+        (isAdmin()
+          ? '<button class="stamp" id="reset-btn" type="button" style="margin-top:14px;">Reset Topics</button>'
+          : '');
     } else if (isAdmin() && votesComplete){
       assignSection = '' +
-        '<p class="section-sub" style="margin-top:0;">Randomly hand each agent one of the 8 shortlisted theories.</p>' +
+        '<p class="section-sub" style="margin-top:0;">Randomly hand each agent one of the ' + SHORTLIST_SIZE + ' shortlisted theories.</p>' +
         '<button class="stamp" id="assign-btn" type="button" style="margin-top:14px;">Randomly Assign Topics</button>';
     } else if (isAdmin()){
       assignSection = '<p class="section-sub" style="margin-top:0;">Shuffle unlocks once all ' + TARGET_PEOPLE + ' agents have filed (' + n + ' so far) — this is just a preview.</p>';
@@ -972,6 +975,15 @@
       assignBtn.addEventListener('click', assignTopics);
     }
 
+    var resetBtn = document.getElementById('reset-btn');
+    if (resetBtn){
+      resetBtn.addEventListener('click', function(){
+        if (confirm("Reset will clear the current topic assignments for everyone. Continue?")){
+          db.ref('assignments').remove();
+        }
+      });
+    }
+
     var revealBtn = document.getElementById('reveal-btn');
     if (revealBtn){
       revealBtn.addEventListener('click', function(){
@@ -1046,11 +1058,17 @@
     render();
   });
 
+  var EXCLUDED_NAMES = ["ian"];
+
   db.ref('submissions').on('value', function(snap){
     var val = snap.val() || {};
     state.submissions = Object.keys(val)
       .map(function(k){ return val[k]; })
-      .filter(function(s){ return !/test/i.test(s.name); });
+      .filter(function(s){
+        if (/test/i.test(s.name)) return false;
+        if (EXCLUDED_NAMES.indexOf(s.name.trim().toLowerCase()) !== -1) return false;
+        return true;
+      });
     render();
   });
 
