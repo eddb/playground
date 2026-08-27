@@ -643,8 +643,9 @@
   ];
   var TOPIC_MAP = {};
   TOPICS.forEach(function(t){ TOPIC_MAP[t.id] = t.label; });
-  var MAX_VOTES = 6;
+  var MAX_VOTES = 8;
   var TARGET_PEOPLE = 6;
+  var SHORTLIST_SIZE = 6;
   var NAME_KEY = "conspiracyOlympicsName";
   var ADMIN_NAME = "edd";
 
@@ -708,7 +709,7 @@
   }
 
   function shortlistIds(state){
-    return tally(state).slice(0, MAX_VOTES).map(function(r){ return r.id; });
+    return tally(state).slice(0, SHORTLIST_SIZE).map(function(r){ return r.id; });
   }
 
   function shuffle(arr){
@@ -803,11 +804,11 @@
     var ranked = tally(state);
 
     var rows = ranked.map(function(r, i){
-      var isShort = i < MAX_VOTES;
+      var isShort = i < SHORTLIST_SIZE;
       var maxCount = ranked[0].count || 1;
       var barPct = Math.round((r.count / maxCount) * 100);
       return '' +
-        (i === MAX_VOTES ? '<div class="cutoff">Shortlist Cutoff</div>' : '') +
+        (i === SHORTLIST_SIZE ? '<div class="cutoff">Shortlist Cutoff</div>' : '') +
         '<div class="rank-row' + (isShort ? ' shortlisted' : '') + '">' +
           '<span class="rank-num">' + (i+1) + (isShort ? DOODLE_RING : '') + '</span>' +
           '<span class="rank-name">' + escapeHtml(r.label) + '</span>' +
@@ -908,7 +909,7 @@
           '<div class="letter">' +
             '<p class="lh-addr">To: The Eight Agents<br>Re: Shortlist Assembly &amp; Topic Assignment</p>' +
             '<p class="salutation">Dear Agents,</p>' +
-            '<p class="letter-body">Cast your ' + MAX_VOTES + ' votes each. The top ' + MAX_VOTES + ' theories make the shortlist, then each agent is randomly handed one to defend: 15 minutes, 6 slides, max 2 minutes of media. Convince the room. <strong>Winner crowned on the night by group vote.</strong></p>' +
+            '<p class="letter-body">Cast your ' + MAX_VOTES + ' votes each. The top ' + SHORTLIST_SIZE + ' theories make the shortlist, then each agent is randomly handed one to defend: 15 minutes, 6 slides, max 2 minutes of media. Convince the room. <strong>Winner crowned on the night by group vote.</strong></p>' +
             '<p class="sign-off">Sincerely,</p>' +
             '<div class="redact-bar sign-bar" aria-hidden="true">&nbsp;</div>' +
             '<p class="sign-title">The Committee</p>' +
