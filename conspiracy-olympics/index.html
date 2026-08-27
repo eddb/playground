@@ -643,8 +643,8 @@
   ];
   var TOPIC_MAP = {};
   TOPICS.forEach(function(t){ TOPIC_MAP[t.id] = t.label; });
-  var MAX_VOTES = 8;
-  var TARGET_PEOPLE = 8;
+  var MAX_VOTES = 6;
+  var TARGET_PEOPLE = 6;
   var NAME_KEY = "conspiracyOlympicsName";
   var ADMIN_NAME = "edd";
 
@@ -761,7 +761,7 @@
             : '') +
           '<div class="redact-bar field-label">Agent Name</div>' +
           '<input type="text" id="name-input" placeholder="First name" autocomplete="given-name" maxlength="40" value="' + escapeHtml(existing ? existing.name : myName) + '">' +
-          '<div class="redact-bar field-label" style="margin-top:20px;">Pick exactly 8 theories to shortlist</div>' +
+          '<div class="redact-bar field-label" style="margin-top:20px;">Pick exactly ' + MAX_VOTES + ' theories to shortlist</div>' +
           '<div class="topic-grid" id="topic-grid">' + rows + '</div>' +
           '<div class="form-footer">' +
             '<div class="counter"><strong id="vote-count">' + myVotes.length + '</strong> / ' + MAX_VOTES + ' selected</div>' +
@@ -908,7 +908,7 @@
           '<div class="letter">' +
             '<p class="lh-addr">To: The Eight Agents<br>Re: Shortlist Assembly &amp; Topic Assignment</p>' +
             '<p class="salutation">Dear Agents,</p>' +
-            '<p class="letter-body">Cast your 8 votes each. The top 8 theories make the shortlist, then each agent is randomly handed one to defend: 15 minutes, 6 slides, max 2 minutes of media. Convince the room. <strong>Winner crowned on the night by group vote.</strong></p>' +
+            '<p class="letter-body">Cast your ' + MAX_VOTES + ' votes each. The top ' + MAX_VOTES + ' theories make the shortlist, then each agent is randomly handed one to defend: 15 minutes, 6 slides, max 2 minutes of media. Convince the room. <strong>Winner crowned on the night by group vote.</strong></p>' +
             '<p class="sign-off">Sincerely,</p>' +
             '<div class="redact-bar sign-bar" aria-hidden="true">&nbsp;</div>' +
             '<p class="sign-title">The Committee</p>' +
