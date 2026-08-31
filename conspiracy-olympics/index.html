@@ -819,47 +819,41 @@
 
     var assignSection;
     if (state.assignments && state.assignments.length){
-      var myRevealName = localStorage.getItem(NAME_KEY) || "";
-      var mine = state.assignments.find(function(a){
-        return a.name.toLowerCase() === myRevealName.toLowerCase();
-      });
-
-      var revealBlock;
-      if (mine){
-        revealBlock = '' +
-          '<div class="reveal-card">' +
-            '<span class="redact-bar reveal-label">Your Topic</span>' +
-            '<div class="reveal-name">' + escapeHtml(mine.name) + '</div>' +
-            '<div class="reveal-topic">' + escapeHtml(TOPIC_MAP[mine.topicId] || mine.topicId) + '</div>' +
-          '</div>';
+      if (isAdmin()){
+        var allCards = state.assignments.map(function(a){
+          return '<div class="assign-card">' +
+            '<div class="assign-name">' + escapeHtml(a.name) + '</div>' +
+            '<div class="assign-topic">' + escapeHtml(TOPIC_MAP[a.topicId] || a.topicId) + '</div>' +
+            '</div>';
+        }).join("");
+        assignSection = '' +
+          '<p class="section-sub" style="margin-top:0;">Admin only &mdash; everyone else only sees their own topic.</p>' +
+          '<div class="assign-grid">' + allCards + '</div>' +
+          '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>' +
+          '<button class="stamp" id="reset-btn" type="button" style="margin-top:14px;">Reset Topics</button>';
       } else {
-        revealBlock = '' +
-          '<div class="card reveal-prompt">' +
-            '<div class="redact-bar field-label">Who Are You?</div>' +
-            '<input type="text" id="reveal-name-input" placeholder="First name" value="' + escapeHtml(myRevealName) + '">' +
-            '<button class="stamp" id="reveal-btn" type="button" style="margin-top:14px;">Reveal My Topic</button>' +
-            '<div id="reveal-message"></div>' +
-          '</div>';
+        var myRevealName = localStorage.getItem(NAME_KEY) || "";
+        var mine = state.assignments.find(function(a){
+          return a.name.toLowerCase() === myRevealName.toLowerCase();
+        });
+
+        if (mine){
+          assignSection = '' +
+            '<div class="reveal-card">' +
+              '<span class="redact-bar reveal-label">Your Topic</span>' +
+              '<div class="reveal-name">' + escapeHtml(mine.name) + '</div>' +
+              '<div class="reveal-topic">' + escapeHtml(TOPIC_MAP[mine.topicId] || mine.topicId) + '</div>' +
+            '</div>';
+        } else {
+          assignSection = '' +
+            '<div class="card reveal-prompt">' +
+              '<div class="redact-bar field-label">Who Are You?</div>' +
+              '<input type="text" id="reveal-name-input" placeholder="First name" value="' + escapeHtml(myRevealName) + '">' +
+              '<button class="stamp" id="reveal-btn" type="button" style="margin-top:14px;">Reveal My Topic</button>' +
+              '<div id="reveal-message"></div>' +
+            '</div>';
+        }
       }
-
-      var others = state.assignments.filter(function(a){
-        return !mine || a.name.toLowerCase() !== mine.name.toLowerCase();
-      });
-      var cards = others.map(function(a){
-        return '<div class="assign-card">' +
-          '<div class="assign-name">' + escapeHtml(a.name) + '</div>' +
-          '<div class="assign-topic">' + escapeHtml(TOPIC_MAP[a.topicId] || a.topicId) + '</div>' +
-          '</div>';
-      }).join("");
-
-      assignSection = '' +
-        revealBlock +
-        '<p class="section-sub" style="margin-top:20px;">' + (mine ? "Everyone Else&rsquo;s Topics" : "All Assignments") + '</p>' +
-        '<div class="assign-grid others">' + cards + '</div>' +
-        '<p class="section-sub">Assigned ' + escapeHtml(formatWhen(state.assignedAt)) + '</p>' +
-        (isAdmin()
-          ? '<button class="stamp" id="reset-btn" type="button" style="margin-top:14px;">Reset Topics</button>'
-          : '');
     } else if (isAdmin() && votesComplete){
       assignSection = '' +
         '<p class="section-sub" style="margin-top:0;">Randomly hand each agent one of the ' + SHORTLIST_SIZE + ' shortlisted theories.</p>' +
