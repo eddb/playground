@@ -14,19 +14,18 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   .hmm-root {
-    --ink: #1C1917;
-    --ink2: #262019;
+    --ink: #161412;
+    --ink2: #211E1A;
     --bone: #F6EAD2;
-    --bone2: #CDB996;
+    --bone2: #A69A87;
     --pumpkin: #D9503F;
-    --blood: #7A2A1E;
+    --blood: #5C2018;
     --toxic: #5F83A0;
-    --mustard: #DBA85A;
+    --toxic-dark: #2E4A5C;
     min-height: 100vh;
     position: relative;
     background:
-      radial-gradient(ellipse at 20% 0%, rgba(122,42,30,0.35), transparent 55%),
-      radial-gradient(ellipse at 85% 15%, rgba(219,168,90,0.12), transparent 45%),
+      linear-gradient(180deg, #1a1815, #131110),
       repeating-radial-gradient(circle at 0 0, rgba(246,234,210,0.035) 0, rgba(246,234,210,0.035) 1px, transparent 1px, transparent 4px),
       var(--ink);
     color: var(--bone);
@@ -47,10 +46,10 @@
   .hmm-header {
     text-align: center;
     padding: 32px 16px 22px;
-    border-bottom: 4px solid var(--pumpkin);
+    border-bottom: 3px solid var(--pumpkin);
     box-shadow: 0 4px 0 var(--blood);
     position: relative;
-    background: linear-gradient(180deg, rgba(122,42,30,0.18), transparent);
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
   }
   .hmm-header-icon { font-size: 1.9rem; }
   .hmm-logo {
@@ -68,8 +67,8 @@
   .hmm-countdown {
     display: inline-flex; align-items: center; gap: 8px;
     margin-top: 16px; padding: 8px 20px;
-    border: 2px solid var(--pumpkin); border-radius: 2px;
-    background: rgba(217,80,63,0.12);
+    border: 1px solid var(--pumpkin); border-radius: 2px;
+    background: rgba(0,0,0,0.25);
     font-size: 0.8rem;
     transform: rotate(-1deg);
   }
@@ -77,12 +76,12 @@
     max-width: 520px; margin: 18px auto 0; padding: 14px 20px;
     text-align: center;
   }
-  .hmm-progress-panel-head { font-family: 'Creepster', cursive; font-size: 1.3rem; color: var(--mustard); letter-spacing: 0.5px; }
+  .hmm-progress-panel-head { font-family: 'Creepster', cursive; font-size: 1.3rem; color: var(--bone); letter-spacing: 0.5px; }
   .hmm-progress-panel-sub { font-size: 0.72rem; color: var(--bone2); margin-top: 8px; }
   .hmm-progress-track.big { height: 12px; margin-top: 8px; }
   .hmm-precrypt {
-    text-align: center; font-size: 0.78rem; color: var(--mustard);
-    background: rgba(219,168,90,0.1); border-top: 1px solid rgba(219,168,90,0.3); border-bottom: 1px solid rgba(219,168,90,0.3);
+    text-align: center; font-size: 0.78rem; color: var(--bone2);
+    background: rgba(246,234,210,0.05); border-top: 1px solid rgba(246,234,210,0.12); border-bottom: 1px solid rgba(246,234,210,0.12);
     padding: 8px 16px; margin-top: 8px;
   }
   .hmm-nav {
@@ -116,7 +115,7 @@
     position: absolute; top: 10px; left: 10px; background: var(--blood); color: var(--bone);
     font-size: 0.62rem; padding: 4px 10px; text-transform: uppercase; letter-spacing: 1px;
     transform: rotate(-6deg); box-shadow: 2px 2px 0 rgba(0,0,0,0.5); font-weight: bold;
-    border: 1px solid var(--mustard);
+    border: 1px solid rgba(246,234,210,0.4);
   }
   .hmm-watched-badge {
     position: absolute; top: 8px; right: 8px; background: var(--toxic); color: var(--ink);
@@ -124,12 +123,12 @@
     border: 2px solid var(--ink); font-weight: bold;
   }
   .hmm-admin-poster {
-    position: absolute; bottom: 8px; right: 8px; background: rgba(12,10,8,0.85); color: var(--mustard);
-    font-size: 0.62rem; padding: 4px 8px; border: 1px solid var(--mustard); border-radius: 2px;
+    position: absolute; bottom: 8px; right: 8px; background: rgba(12,10,8,0.85); color: var(--bone2);
+    font-size: 0.62rem; padding: 4px 8px; border: 1px solid rgba(246,234,210,0.3); border-radius: 2px;
     display: flex; align-items: center; gap: 5px; cursor: pointer;
   }
   .hmm-card-body { padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-  .hmm-card-title { font-size: 1.15rem; color: var(--mustard); line-height: 1.2; text-transform: uppercase; }
+  .hmm-card-title { font-size: 1.15rem; color: var(--bone); line-height: 1.2; text-transform: uppercase; }
   .hmm-card-meta { font-size: 0.7rem; color: var(--bone2); opacity: 0.8; }
   .hmm-rating-badges { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .hmm-rating-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 4px; font-size: 0.72rem; font-weight: bold; line-height: 1; }
@@ -139,7 +138,7 @@
   .hmm-rating-edit { background: none; border: none; color: var(--bone2); cursor: pointer; padding: 2px; font-size: 0.8rem; }
   .hmm-rating-edit:hover { color: var(--bone); }
   .hmm-progress-track { height: 6px; background: rgba(246,234,210,0.12); border-radius: 3px; overflow: hidden; border: 1px solid rgba(246,234,210,0.15); }
-  .hmm-progress-fill { height: 100%; background: linear-gradient(90deg, var(--toxic), var(--mustard)); }
+  .hmm-progress-fill { height: 100%; background: var(--toxic); }
   .hmm-locked { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--bone2); opacity: 0.7; }
   .hmm-modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
@@ -150,7 +149,7 @@
     padding: 24px; max-height: 88vh; overflow-y: auto; border-radius: 3px;
     box-shadow: 5px 5px 0 var(--blood);
   }
-  .hmm-modal h3 { color: var(--mustard); margin-top: 0; font-family: 'Creepster', cursive; font-size: 1.5rem; text-transform: uppercase; }
+  .hmm-modal h3 { color: var(--bone); margin-top: 0; font-family: 'Creepster', cursive; font-size: 1.5rem; text-transform: uppercase; }
   .hmm-field { margin-bottom: 14px; }
   .hmm-field label { display: block; font-size: 0.72rem; color: var(--bone2); margin-bottom: 5px; }
   .hmm-field input[type=text], .hmm-field input[type=number], .hmm-field textarea, .hmm-field select {
@@ -158,7 +157,7 @@
     padding: 8px 10px; font-family: 'Libre Baskerville', serif; font-size: 0.9rem; border-radius: 2px;
   }
   .hmm-field textarea { min-height: 80px; resize: vertical; }
-  .hmm-dupe-warning { color: var(--mustard); font-size: 0.72rem; margin-top: 6px; }
+  .hmm-dupe-warning { color: var(--pumpkin); font-size: 0.72rem; margin-top: 6px; }
 
   /* ---- mechanical-keycap buttons ---- */
   .hmm-btn, .hmm-tab, .hmm-chip, .hmm-key {
@@ -172,33 +171,30 @@
     padding: 11px 16px; font-size: 0.8rem;
     text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
-    border: 1px solid #5c1f16;
-    color: var(--ink);
+    background: linear-gradient(180deg, #38342E 0%, var(--ink2) 55%, #17140F 100%);
+    border: 1px solid rgba(246,234,210,0.3);
+    color: var(--bone);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.35),
-      inset 0 -3px 4px rgba(0,0,0,0.15),
-      0 4px 0 var(--blood),
-      0 7px 10px rgba(0,0,0,0.45);
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      0 3px 0 var(--pumpkin),
+      0 6px 9px rgba(0,0,0,0.4);
   }
-  .hmm-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -3px 4px rgba(0,0,0,0.15), 0 5px 0 var(--blood), 0 9px 12px rgba(0,0,0,0.45); }
-  .hmm-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 0 var(--blood), 0 1px 3px rgba(0,0,0,0.4); }
+  .hmm-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 0 var(--pumpkin), 0 8px 11px rgba(0,0,0,0.4); }
+  .hmm-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 var(--pumpkin), 0 1px 3px rgba(0,0,0,0.4); }
   .hmm-btn.secondary {
-    background: linear-gradient(180deg, #362D22 0%, var(--ink2) 55%, #17130F 100%);
-    border: 1px solid rgba(246,234,210,0.3); color: var(--bone);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 0 #0A0806, 0 5px 8px rgba(0,0,0,0.4);
   }
   .hmm-btn.secondary:hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 0 #0A0806, 0 7px 10px rgba(0,0,0,0.4); }
   .hmm-btn.secondary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 #0A0806, 0 1px 3px rgba(0,0,0,0.4); }
   .hmm-btn.danger {
-    background: linear-gradient(180deg, #3E2621 0%, #2A1815 55%, #180D0B 100%);
-    border: 1px solid var(--blood); color: #E8A99C;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 0 #451810, 0 5px 8px rgba(0,0,0,0.4);
+    background: linear-gradient(180deg, #322622 0%, #241a17 55%, #150f0d 100%);
+    border: 1px solid rgba(92,32,24,0.7); color: #C98B7E;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 0 var(--blood), 0 5px 8px rgba(0,0,0,0.4);
   }
-  .hmm-btn.danger:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 #451810, 0 1px 3px rgba(0,0,0,0.4); }
+  .hmm-btn.danger:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--blood), 0 1px 3px rgba(0,0,0,0.4); }
   .hmm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
   .hmm-tab {
-    background: linear-gradient(180deg, #362D22 0%, var(--ink2) 55%, #17130F 100%);
+    background: linear-gradient(180deg, #38342E 0%, var(--ink2) 55%, #17140F 100%);
     border: 1px solid rgba(246,234,210,0.25); color: var(--bone2);
     padding: 9px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;
     text-transform: uppercase; letter-spacing: 0.5px;
@@ -206,43 +202,44 @@
   }
   .hmm-tab:hover:not(:disabled):not(.active) { transform: translateY(-1px); }
   .hmm-tab.active {
-    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
-    border-color: #5c1f16; color: var(--ink); font-weight: bold;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -3px 4px rgba(0,0,0,0.15), 0 4px 0 var(--blood), 0 6px 9px rgba(0,0,0,0.4);
+    background: linear-gradient(180deg, #7FA6C2 0%, var(--toxic) 55%, #3E617A 100%);
+    border-color: var(--toxic-dark); color: var(--ink); font-weight: bold;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 0 var(--toxic-dark), 0 6px 9px rgba(0,0,0,0.4);
     transform: translateY(1px);
   }
   .hmm-tab:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
   .hmm-chip {
-    border: 1px solid rgba(246,234,210,0.3); background: linear-gradient(180deg, #302823 0%, var(--ink2) 100%);
+    border: 1px solid rgba(246,234,210,0.3); background: linear-gradient(180deg, #2A2621 0%, var(--ink2) 100%);
     color: var(--bone2); padding: 6px 12px; font-size: 0.7rem;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 0 #0A0806, 0 3px 5px rgba(0,0,0,0.3);
   }
   .hmm-chip.active {
     background: linear-gradient(180deg, #7FA6C2 0%, var(--toxic) 60%, #3E617A 100%);
-    border-color: #2E4A5C; color: var(--ink); font-weight: bold;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 2px 0 #2E4A5C, 0 3px 5px rgba(0,0,0,0.35);
+    border-color: var(--toxic-dark); color: var(--ink); font-weight: bold;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 2px 0 var(--toxic-dark), 0 3px 5px rgba(0,0,0,0.35);
     transform: translateY(1px);
   }
   .hmm-key-row { display: flex; gap: 6px; flex-wrap: wrap; }
   .hmm-key {
     width: 42px; height: 42px; font-size: 1rem; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(180deg, #3A3128 0%, var(--ink2) 55%, #17130F 100%);
+    background: linear-gradient(180deg, #38342E 0%, var(--ink2) 55%, #17140F 100%);
     border: 1px solid rgba(246,234,210,0.25); color: var(--bone);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 3px 0 #0A0806, 0 4px 6px rgba(0,0,0,0.4);
   }
   .hmm-key:hover:not(:disabled) { transform: translateY(-1px); }
   .hmm-key.active {
-    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
-    border-color: #5c1f16; color: var(--ink);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 3px 0 var(--blood), 0 5px 7px rgba(0,0,0,0.4);
+    background: linear-gradient(180deg, #7FA6C2 0%, var(--toxic) 55%, #3E617A 100%);
+    border-color: var(--toxic-dark); color: var(--ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 3px 0 var(--toxic-dark), 0 5px 7px rgba(0,0,0,0.4);
     transform: translateY(1px);
   }
   .hmm-key.banned {
     opacity: 0.35; text-decoration: line-through; cursor: not-allowed;
     box-shadow: none; border-style: dashed;
   }
-  .hmm-key:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--blood), 0 1px 2px rgba(0,0,0,0.4); }
+  .hmm-key:active:not(:disabled):not(.active) { transform: translateY(3px); box-shadow: 0 0 0 #0A0806, 0 1px 2px rgba(0,0,0,0.4); }
+  .hmm-key.active:active { transform: translateY(3px); box-shadow: 0 0 0 var(--toxic-dark), 0 1px 2px rgba(0,0,0,0.4); }
   .hmm-key-hint { font-size: 0.68rem; color: var(--bone2); opacity: 0.7; margin-top: 6px; }
 
   .hmm-modal-actions { display: flex; gap: 10px; margin-top: 16px; }
@@ -252,7 +249,7 @@
   .hmm-leaderrow { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(246,234,210,0.08); }
   .hmm-leaderrow .name { width: 110px; font-size: 0.85rem; flex-shrink: 0; }
   .hmm-leaderrow .track { flex: 1; height: 8px; background: rgba(246,234,210,0.1); border-radius: 4px; overflow: hidden; }
-  .hmm-leaderrow .track-fill { height: 100%; background: linear-gradient(90deg, var(--blood), var(--pumpkin)); }
+  .hmm-leaderrow .track-fill { height: 100%; background: var(--toxic); }
   .hmm-leaderrow .pct { width: 44px; text-align: right; font-size: 0.78rem; color: var(--bone2); }
   .hmm-wheel-stage { text-align: center; padding: 30px 16px; }
   .hmm-wheel-card {
@@ -684,7 +681,7 @@
     var rows = leaderboard.map(function(l){
       return '' +
         '<div class="hmm-leaderrow">' +
-          '<div class="name" style="color:' + (l.name === me ? "var(--pumpkin)" : "var(--bone)") + '">' + escapeHtml(l.name) + '</div>' +
+          '<div class="name" style="color:' + (l.name === me ? "var(--toxic)" : "var(--bone)") + '">' + escapeHtml(l.name) + '</div>' +
           '<div class="track"><div class="track-fill" style="width:' + l.pct + '%"></div></div>' +
           '<div class="pct">' + l.watched + '/' + totalMovies + '</div>' +
         '</div>';
@@ -692,7 +689,7 @@
 
     return '' +
       '<div class="hmm-panel">' +
-        '<h3 class="hmm-display" style="color:var(--pumpkin);margin-top:0">Who\'s ahead</h3>' +
+        '<h3 class="hmm-display" style="color:var(--bone);margin-top:0">Who\'s ahead</h3>' +
         rows +
         (friends.length === 0 ? '<div class="hmm-empty">No one\'s signed up yet.</div>' : "") +
       '</div>';
@@ -707,7 +704,7 @@
 
     return '' +
       '<div class="hmm-panel">' +
-        '<h3 class="hmm-display" style="color:var(--pumpkin);margin-top:0">Nominate a film</h3>' +
+        '<h3 class="hmm-display" style="color:var(--bone);margin-top:0">Nominate a film</h3>' +
         '<div class="hmm-card-meta" style="margin-bottom:16px">' +
           "You've used " + mySubmitted + ' of your ' + MAX_PICKS_PER_PERSON + ' picks' +
           (capLeft > 0 ? ' (' + capLeft + ' left).' : ' — that\'s your lot for regular picks.') +
@@ -786,7 +783,7 @@
       html += renderNamePicker();
     } else {
       html += '' +
-        '<div class="hmm-whoami">Signed in as <strong style="color:var(--pumpkin)">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
+        '<div class="hmm-whoami">Signed in as <strong style="color:var(--toxic)">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
 
       if (!isOpen && !admin){
         html += '<div class="hmm-precrypt">Submissions only until October 1. Watching, ticking off and the leaderboard unlock then.</div>';
