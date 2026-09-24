@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Horror Month</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Butcherman&family=Creepster&family=Special+Elite&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  .hmm-root {
+    --ink: #0C0A08;
+    --ink2: #1D1712;
+    --bone: #F1E6C8;
+    --bone2: #D9C79E;
+    --pumpkin: #E2660F;
+    --blood: #8C1C13;
+    --toxic: #8FAE3D;
+    --violet: #4B3B63;
+    --mustard: #D7A32A;
+    min-height: 100vh;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(140,28,19,0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(215,163,42,0.12), transparent 45%),
+      repeating-radial-gradient(circle at 0 0, rgba(241,230,200,0.035) 0, rgba(241,230,200,0.035) 1px, transparent 1px, transparent 4px),
+      var(--ink);
+    color: var(--bone);
+    font-family: 'Special Elite', 'Courier New', monospace;
+    padding-bottom: 60px;
+    overflow-x: hidden;
+  }
+  .hmm-root::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.5;
+    background-image: repeating-linear-gradient(115deg, rgba(0,0,0,0.12) 0px, transparent 1px, transparent 3px, rgba(0,0,0,0.12) 4px);
+    mix-blend-mode: overlay;
+  }
+  .hmm-root > * { position: relative; z-index: 2; }
+  .hmm-root * { box-sizing: border-box; }
+  .hmm-display { font-family: 'Butcherman', cursive; letter-spacing: 1px; }
+  .hmm-display-sm { font-family: 'Creepster', cursive; letter-spacing: 1px; }
+  .hmm-serif { font-family: 'Libre Baskerville', serif; }
+  .hmm-header {
+    text-align: center;
+    padding: 36px 16px 22px;
+    border-bottom: 4px solid var(--pumpkin);
+    box-shadow: 0 4px 0 var(--blood);
+    position: relative;
+    background: linear-gradient(180deg, rgba(140,28,19,0.18), transparent);
+  }
+  .hmm-header-icon { font-size: 1.9rem; }
+  .hmm-title {
+    font-family: 'Butcherman', cursive;
+    font-size: clamp(2.6rem, 9vw, 5.2rem);
+    color: var(--mustard);
+    text-shadow:
+      4px 4px 0 var(--blood),
+      7px 7px 0 var(--ink),
+      0 0 40px rgba(226,102,15,0.5);
+    margin: 6px 0 0;
+    transform: skew(-3deg);
+    text-transform: uppercase;
+  }
+  .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Libre Baskerville', serif; font-style: italic; }
+  .hmm-countdown {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 16px; padding: 8px 20px;
+    border: 2px solid var(--pumpkin); border-radius: 2px;
+    background: rgba(226,102,15,0.1);
+    font-size: 0.8rem;
+    transform: rotate(-1deg);
+  }
+  .hmm-precrypt {
+    text-align: center; font-size: 0.78rem; color: var(--mustard);
+    background: rgba(215,163,42,0.1); border-top: 1px solid rgba(215,163,42,0.3); border-bottom: 1px solid rgba(215,163,42,0.3);
+    padding: 8px 16px; margin-top: 8px;
+  }
+  .hmm-nav {
+    display: flex; justify-content: center; gap: 8px;
+    padding: 16px; flex-wrap: wrap;
+  }
+  .hmm-tab {
+    background: transparent; border: 1px solid var(--bone2); color: var(--bone2);
+    padding: 8px 16px; cursor: pointer; font-family: 'Special Elite', monospace;
+    font-size: 0.8rem; border-radius: 2px; display: flex; align-items: center; gap: 6px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .hmm-tab.active { background: var(--pumpkin); border-color: var(--pumpkin); color: var(--ink); font-weight: bold; box-shadow: 2px 2px 0 var(--blood); }
+  .hmm-tab:disabled { opacity: 0.35; cursor: not-allowed; }
+  .hmm-section { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .hmm-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 22px; margin-top: 20px;
+  }
+  .hmm-card {
+    background: var(--ink2);
+    border: 1px solid rgba(241,230,200,0.18);
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+    clip-path: polygon(0 0, 96% 0%, 100% 3%, 100% 100%, 4% 100%, 0 97%);
+    position: relative;
+    transition: transform 0.15s;
+    display: flex; flex-direction: column;
+  }
+  .hmm-card:hover { transform: translateY(-4px) rotate(-0.6deg); }
+  .hmm-poster-wrap { position: relative; width: 100%; aspect-ratio: 2/3; background: #0a0908; overflow: hidden; }
+  .hmm-poster-wrap img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) saturate(1.05); }
+  .hmm-poster-placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    color: var(--bone2); opacity: 0.4; flex-direction: column; gap: 6px;
+    background: repeating-linear-gradient(45deg, rgba(241,230,200,0.03) 0, rgba(241,230,200,0.03) 8px, transparent 8px, transparent 16px);
+  }
+  .hmm-poster-placeholder .glyph { font-size: 2rem; }
+  .hmm-badge {
+    position: absolute; top: 10px; left: 10px; background: var(--blood); color: var(--bone);
+    font-size: 0.62rem; padding: 4px 10px; text-transform: uppercase; letter-spacing: 1px;
+    transform: rotate(-6deg); box-shadow: 2px 2px 0 rgba(0,0,0,0.5); font-weight: bold;
+    border: 1px solid var(--mustard);
+  }
+  .hmm-watched-badge {
+    position: absolute; top: 8px; right: 8px; background: var(--toxic); color: var(--ink);
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--ink); font-weight: bold;
+  }
+  .hmm-admin-poster {
+    position: absolute; bottom: 8px; right: 8px; background: rgba(12,10,8,0.85); color: var(--mustard);
+    font-size: 0.62rem; padding: 4px 8px; border: 1px solid var(--mustard); border-radius: 2px;
+    display: flex; align-items: center; gap: 5px; cursor: pointer;
+  }
+  .hmm-card-body { padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .hmm-card-title { font-size: 1.15rem; color: var(--mustard); line-height: 1.2; text-transform: uppercase; }
+  .hmm-card-meta { font-size: 0.7rem; color: var(--bone2); opacity: 0.8; }
+  .hmm-ratings { display: flex; gap: 10px; font-size: 0.7rem; opacity: 0.9; align-items: center; }
+  .hmm-ratings button { background: none; border: none; color: var(--bone2); cursor: pointer; padding: 0; font-size: 0.75rem; }
+  .hmm-progress-track { height: 6px; background: rgba(241,230,200,0.12); border-radius: 3px; overflow: hidden; border: 1px solid rgba(241,230,200,0.15); }
+  .hmm-progress-fill { height: 100%; background: linear-gradient(90deg, var(--toxic), var(--mustard)); }
+  .hmm-btn {
+    background: var(--pumpkin); color: var(--ink); border: 2px solid var(--ink);
+    padding: 10px 14px; font-family: 'Special Elite', monospace; font-size: 0.8rem; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold;
+    box-shadow: 2px 2px 0 var(--blood);
+    transition: transform 0.1s;
+  }
+  .hmm-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--blood); }
+  .hmm-btn.secondary { background: transparent; border: 1px solid var(--bone2); color: var(--bone); box-shadow: none; }
+  .hmm-btn.danger { background: transparent; border: 1px solid var(--blood); color: var(--blood); box-shadow: none; }
+  .hmm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+  .hmm-locked { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--bone2); opacity: 0.7; }
+  .hmm-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
+    z-index: 50; padding: 16px;
+  }
+  .hmm-modal {
+    background: var(--ink2); border: 2px solid var(--pumpkin); max-width: 460px; width: 100%;
+    padding: 24px; max-height: 88vh; overflow-y: auto; border-radius: 3px;
+    box-shadow: 5px 5px 0 var(--blood);
+  }
+  .hmm-modal h3 { color: var(--mustard); margin-top: 0; font-family: 'Creepster', cursive; font-size: 1.5rem; text-transform: uppercase; }
+  .hmm-field { margin-bottom: 14px; }
+  .hmm-field label { display: block; font-size: 0.72rem; color: var(--bone2); margin-bottom: 5px; }
+  .hmm-field input[type=text], .hmm-field input[type=number], .hmm-field textarea, .hmm-field select {
+    width: 100%; background: var(--ink); border: 1px solid rgba(239,227,200,0.25); color: var(--bone);
+    padding: 8px 10px; font-family: 'Libre Baskerville', serif; font-size: 0.9rem; border-radius: 2px;
+  }
+  .hmm-field textarea { min-height: 80px; resize: vertical; }
+  .hmm-field input[type=range] { width: 100%; }
+  .hmm-dupe-warning { color: var(--mustard); font-size: 0.72rem; margin-top: 6px; }
+  .hmm-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hmm-chip {
+    border: 1px solid rgba(239,227,200,0.3); background: transparent; color: var(--bone2);
+    padding: 5px 10px; border-radius: 12px; font-size: 0.7rem; cursor: pointer;
+  }
+  .hmm-chip.active { background: var(--toxic); border-color: var(--toxic); color: var(--ink); font-weight: bold; }
+  .hmm-modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .hmm-name-picker {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 24px;
+  }
+  .hmm-name-btn {
+    background: var(--ink2); border: 1px solid var(--bone2); color: var(--bone);
+    padding: 10px 18px; border-radius: 2px; cursor: pointer; font-family: 'Special Elite', monospace;
+  }
+  .hmm-name-btn:hover { border-color: var(--pumpkin); color: var(--pumpkin); }
+  .hmm-whoami { text-align: center; padding: 10px 16px; font-size: 0.75rem; color: var(--bone2); }
+  .hmm-whoami button { background: none; border: none; color: var(--pumpkin); text-decoration: underline; cursor: pointer; font-family: inherit; }
+  .hmm-panel { background: var(--ink2); border: 1px solid rgba(241,230,200,0.18); box-shadow: 4px 4px 0 rgba(0,0,0,0.35); padding: 22px; border-radius: 3px; margin-top: 20px; }
+  .hmm-leaderrow { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(239,227,200,0.08); }
+  .hmm-leaderrow .name { width: 110px; font-size: 0.85rem; flex-shrink: 0; }
+  .hmm-leaderrow .track { flex: 1; height: 8px; background: rgba(239,227,200,0.1); border-radius: 4px; overflow: hidden; }
+  .hmm-leaderrow .track-fill { height: 100%; background: linear-gradient(90deg, var(--blood), var(--pumpkin)); }
+  .hmm-leaderrow .pct { width: 44px; text-align: right; font-size: 0.78rem; color: var(--bone2); }
+  .hmm-wheel-stage { text-align: center; padding: 30px 16px; }
+  .hmm-wheel-card {
+    max-width: 280px; margin: 20px auto 0; padding: 18px; background: var(--ink2);
+    border: 2px solid var(--pumpkin); border-radius: 4px;
+    box-shadow: 5px 5px 0 var(--blood);
+  }
+  .hmm-wheel-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 2px; margin-bottom: 10px; }
+  .hmm-tonight-strip {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+    padding: 12px 16px; margin-top: 10px; font-size: 0.78rem; color: var(--bone2);
+  }
+  .hmm-tonight-pill {
+    background: rgba(124,154,60,0.15); border: 1px solid var(--toxic); color: var(--toxic);
+    padding: 3px 10px; border-radius: 12px; font-size: 0.72rem;
+  }
+  .hmm-empty { text-align: center; padding: 40px 16px; color: var(--bone2); opacity: 0.7; }
+  .hmm-loading { min-height: 100vh; background: #100E0C; display: flex; align-items: center; justify-content: center; color: #EFE3C8; font-family: serif; }
+</style>
+</head>
+<body>
+<div id="root" class="hmm-root"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ---- Firebase project config (shared with conspiracy-olympics, data lives under horror/) ----
+  var firebaseConfig = {
+    apiKey: "AIzaSyDrbLHnvhhu_XYcyXO2Om8fN4bff8QkxOo",
+    authDomain: "tear-7c4ae.firebaseapp.com",
+    databaseURL: "https://tear-7c4ae-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tear-7c4ae",
+    storageBucket: "tear-7c4ae.firebasestorage.app",
+    messagingSenderId: "1001513131517",
+    appId: "1:1001513131517:web:f5e3911cf1e06b68a70d94"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.database();
+  var ROOT = "horror/";
+
+  // ---- Constants ----
+  var REACTION_TAGS = [
+    "Screamed", "Slept through it", "Instant classic",
+    "So bad it's good", "Nightmare fuel", "Meh", "Still thinking about it"
+  ];
+  var HALLOWEEN = new Date("2026-10-31T23:59:59");
+  var CHALLENGE_OPENS = new Date("2026-10-01T00:00:00");
+  var ADMIN_NAME = "Admin";
+  var NAME_KEY = "horrorMovieMonthName";
+  var JOIN_PHRASES = [
+    "Who's joining the coven?",
+    "Claim your spot in the crypt.",
+    "Who's in the cult?",
+    "Sign up before the purge.",
+    "The ritual needs names.",
+    "Who dares enter?"
+  ];
+  var TARGET_TOTAL = 15;
+  var RESERVED_CLASSICS = 3;
+  var TARGET_ENTRANT_PICKS = TARGET_TOTAL - RESERVED_CLASSICS;
+  var TONIGHT_WINDOW_MS = 1000 * 60 * 60 * 20;
+
+  function uid(){
+    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
+  function daysUntil(target){
+    var ms = target - new Date();
+    return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+  }
+  function escapeHtml(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function slugify(name){
+    var slug = String(name).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return slug || ("friend-" + Math.random().toString(36).slice(2, 8));
+  }
+
+  // ---- Shared state (mirrors Firebase) ----
+  var state = { friends: {}, movies: {}, watches: {}, history: [], tonight: {} };
+  var initialLoaded = false;
+
+  // ---- Local/UI state ----
+  var me = localStorage.getItem(NAME_KEY) || null;
+  var tab = "wall";
+  var showAdd = false;
+  var showRateMovieId = null;
+  var spinResult = null;
+  var spinning = false;
+  var rateSelectedTag = "";
+  var joinPhrase = JOIN_PHRASES[Math.floor(Math.random() * JOIN_PHRASES.length)];
+
+  function friendsList(){
+    var f = state.friends || {};
+    return Object.keys(f).map(function(k){ return f[k]; });
+  }
+  function moviesList(){
+    var m = state.movies || {};
+    return Object.keys(m).map(function(id){
+      var copy = {};
+      for (var k in m[id]) copy[k] = m[id][k];
+      copy.id = id;
+      return copy;
+    }).sort(function(a, b){ return (b.addedAt || 0) - (a.addedAt || 0); });
+  }
+  function friendKey(name){ return slugify(name); }
+  function watchFor(movieId, name){
+    var w = state.watches[movieId];
+    return w ? w[friendKey(name)] : null;
+  }
+  function hasWatched(movieId, name){
+    var w = watchFor(movieId, name);
+    return !!(w && w.watched);
+  }
+  function activeTonight(){
+    var t = state.tonight || {};
+    return Object.keys(t).map(function(k){ return t[k]; }).filter(function(e){
+      return Date.now() - e.ts < TONIGHT_WINDOW_MS;
+    });
+  }
+
+  function isAdmin(){
+    return !!me && me.trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+  }
+
+  // ---- Mutations ----
+  function pickName(name){
+    me = name;
+    localStorage.setItem(NAME_KEY, name);
+    render();
+  }
+
+  function addFriend(rawName){
+    var trimmed = (rawName || "").trim();
+    if (!trimmed) return;
+    var existing = friendsList().find(function(f){ return f.toLowerCase() === trimmed.toLowerCase(); });
+    if (existing){ pickName(existing); showAdd = false; render(); return; }
+    var key = friendKey(trimmed);
+    db.ref(ROOT + "friends/" + key).set(trimmed).then(function(){
+      showAdd = false;
+      pickName(trimmed);
+    });
+  }
+
+  function toggleTonight(){
+    if (!me) return;
+    var key = friendKey(me);
+    var existing = (state.tonight || {})[key];
+    if (existing && Date.now() - existing.ts < TONIGHT_WINDOW_MS){
+      db.ref(ROOT + "tonight/" + key).remove();
+    } else {
+      db.ref(ROOT + "tonight/" + key).set({ name: me, ts: Date.now() });
+    }
+  }
+
+  function addMovie(payload){
+    var id = uid();
+    db.ref(ROOT + "movies/" + id).set({
+      title: payload.title,
+      submittedBy: me,
+      classic: !!payload.classic,
+      posterUrl: "",
+      imdb: null,
+      rt: null,
+      addedAt: Date.now()
+    });
+  }
+
+  function updateMovieRatings(id, imdb, rt){
+    db.ref(ROOT + "movies/" + id).update({
+      imdb: imdb ? Number(imdb) : null,
+      rt: rt ? Number(rt) : null
+    });
+  }
+
+  function submitWatch(movieId, data){
+    var key = friendKey(me);
+    db.ref(ROOT + "watches/" + movieId + "/" + key).set({
+      watched: true,
+      name: me,
+      rating: Number(data.rating),
+      tag: data.tag,
+      review: data.review,
+      watchedAt: Date.now()
+    }).then(function(){
+      showRateMovieId = null;
+      render();
+    });
+  }
+
+  function unwatch(movieId){
+    var key = friendKey(me);
+    db.ref(ROOT + "watches/" + movieId + "/" + key).remove();
+  }
+
+  function handleAdminPoster(file, movieId){
+    if (!file) return;
+    if (file.size > 3.5 * 1024 * 1024){
+      alert("Keep posters under ~3.5MB, they're stored as text data.");
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(){
+      db.ref(ROOT + "movies/" + movieId + "/posterUrl").set(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function submitterLoad(name){
+    var theirMovies = moviesList().filter(function(m){ return m.submittedBy === name; }).map(function(m){ return m.id; });
+    if (!theirMovies.length) return 0;
+    var friends = friendsList();
+    var watchCount = theirMovies.reduce(function(sum, mid){
+      return sum + friends.filter(function(f){ return hasWatched(mid, f); }).length;
+    }, 0);
+    return watchCount / theirMovies.length;
+  }
+
+  function spinWheel(){
+    if (!me || spinning) return;
+    var movies = moviesList();
+    var unwatchedByMe = movies.filter(function(m){ return !hasWatched(m.id, me); });
+    if (!unwatchedByMe.length){ spinResult = { empty: true }; render(); return; }
+
+    var lastSubmitter = state.history.length ? state.history[state.history.length - 1].submitter : null;
+    var pool = unwatchedByMe.filter(function(m){ return m.submittedBy !== lastSubmitter; });
+    if (!pool.length) pool = unwatchedByMe;
+
+    var weights = pool.map(function(m){
+      var load = submitterLoad(m.submittedBy);
+      var classicBoost = m.classic ? 1.3 : 1;
+      return (1.2 - Math.min(load, 1)) * classicBoost + 0.15;
+    });
+    var totalWeight = weights.reduce(function(a, b){ return a + b; }, 0);
+    var r = Math.random() * totalWeight;
+    var chosen = pool[0];
+    for (var i = 0; i < pool.length; i++){
+      r -= weights[i];
+      if (r <= 0){ chosen = pool[i]; break; }
+    }
+
+    spinning = true;
+    spinResult = null;
+    render();
+
+    var ticks = 0;
+    var maxTicks = 14 + Math.floor(Math.random() * 6);
+    var spinPool = pool.length > 1 ? pool : movies;
+    var interval = setInterval(function(){
+      ticks++;
+      spinResult = { preview: spinPool[Math.floor(Math.random() * spinPool.length)] };
+      render();
+      if (ticks >= maxTicks){
+        clearInterval(interval);
+        spinning = false;
+        spinResult = { movie: chosen };
+        var nextHistory = state.history.concat([{ movieId: chosen.id, submitter: chosen.submittedBy, ts: Date.now() }]).slice(-50);
+        db.ref(ROOT + "history").set(nextHistory);
+        render();
+      }
+    }, 90);
+  }
+
+  // ---- Render ----
+  function renderHeader(){
+    var daysLeft = daysUntil(HALLOWEEN);
+    return '' +
+      '<div class="hmm-header">' +
+        '<div class="hmm-header-icon">💀</div>' +
+        '<h1 class="hmm-title">Horror Month</h1>' +
+        '<div class="hmm-sub hmm-serif">A closed-circle October challenge. Watch at your own pace, no order required.</div>' +
+        '<div class="hmm-countdown">🔥 ' +
+          (daysLeft > 0 ? (daysLeft + " days until Halloween") : "It's Halloween. Godspeed.") +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderTonightStrip(){
+    if (!me) return "";
+    var active = activeTonight();
+    var mine = active.find(function(t){ return t.name === me; });
+    var pills = active.map(function(t){ return '<span class="hmm-tonight-pill">' + escapeHtml(t.name) + '</span>'; }).join("");
+    return '' +
+      '<div class="hmm-tonight-strip">' +
+        '<button class="hmm-btn secondary" style="padding:5px 12px;font-size:0.72rem" data-action="toggle-tonight">' +
+          '👻 ' + (mine ? "Stop watching tonight" : "I'm watching tonight") +
+        '</button>' +
+        (active.length > 0 ? '<span>Watching tonight:</span>' + pills : "") +
+      '</div>';
+  }
+
+  function renderNamePicker(){
+    var isOpen = new Date() >= CHALLENGE_OPENS;
+    var friends = friendsList();
+    var friendBtns = friends.map(function(f){
+      return '<button class="hmm-name-btn" data-action="pick-name" data-name="' + escapeHtml(f) + '">' + escapeHtml(f) + '</button>';
+    }).join("");
+    return '' +
+      '<div class="hmm-section">' +
+        '<div style="text-align:center;margin-top:30px">' +
+          '<p class="hmm-serif">' + escapeHtml(isOpen ? "Who's crawling in tonight?" : joinPhrase) + '</p>' +
+          '<div class="hmm-name-picker">' +
+            friendBtns +
+            '<button class="hmm-name-btn" data-action="open-join" style="border-style:dashed">➕ Add my name</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderMovieCard(m){
+    var friends = friendsList();
+    var watchedCount = friends.filter(function(f){ return hasWatched(m.id, f); }).length;
+    var iWatched = hasWatched(m.id, me);
+    var ratings = friends.map(function(f){ return watchFor(m.id, f); }).filter(function(w){ return w && w.watched; });
+    var avgFriendScore = ratings.length ? (ratings.reduce(function(s, r){ return s + Number(r.rating); }, 0) / ratings.length).toFixed(1) : null;
+    var pct = friends.length ? (watchedCount / friends.length) * 100 : 0;
+
+    return '' +
+      '<div class="hmm-card">' +
+        '<div class="hmm-poster-wrap">' +
+          (m.posterUrl
+            ? '<img src="' + m.posterUrl + '" alt="' + escapeHtml(m.title) + '">'
+            : '<div class="hmm-poster-placeholder"><span class="glyph">💀</span><span style="font-size:0.65rem">poster pending</span></div>') +
+          (m.classic ? '<div class="hmm-badge">Must-watch</div>' : '') +
+          (iWatched ? '<div class="hmm-watched-badge">✓</div>' : '') +
+          (isAdmin()
+            ? '<label class="hmm-admin-poster">⬆️ ' + (m.posterUrl ? "Replace poster" : "Add poster") +
+              '<input type="file" accept="image/*" style="display:none" data-admin-poster data-id="' + m.id + '">' +
+              '</label>'
+            : '') +
+        '</div>' +
+        '<div class="hmm-card-body">' +
+          '<div class="hmm-card-title hmm-display-sm">' + escapeHtml(m.title) + '</div>' +
+          '<div class="hmm-card-meta">Picked by ' + escapeHtml(m.submittedBy) + '</div>' +
+          '<div class="hmm-ratings">' +
+            '<span>IMDb ' + (m.imdb != null ? m.imdb : "—") + '</span>' +
+            '<span>RT ' + (m.rt != null ? m.rt : "—") + '%</span>' +
+            (isAdmin() ? '<button data-action="edit-ratings" data-id="' + m.id + '">✏️</button>' : "") +
+          '</div>' +
+          '<div class="hmm-progress-track"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="hmm-card-meta">' + watchedCount + '/' + friends.length + ' watched</div>' +
+          (iWatched
+            ? '' +
+              '<div class="hmm-card-meta" style="color:#7C9A3C">Group score: ' + (avgFriendScore != null ? avgFriendScore : "—") + '/10 from ' + ratings.length + ' watcher' + (ratings.length === 1 ? "" : "s") + '</div>' +
+              '<button class="hmm-btn danger" data-action="unwatch" data-id="' + m.id + '">Undo tick</button>'
+            : '' +
+              '<div class="hmm-locked">🔒 Reviews locked until you watch it</div>' +
+              '<button class="hmm-btn" data-action="mark-watched" data-id="' + m.id + '">✓ Mark watched</button>') +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderWallTab(){
+    var movies = moviesList();
+    if (!movies.length) return '<div class="hmm-empty">No movies yet. Be the first to nail one to the wall.</div>';
+    return '<div class="hmm-grid">' + movies.map(renderMovieCard).join("") + '</div>';
+  }
+
+  function renderNextTab(){
+    var movies = moviesList();
+    var html = '' +
+      '<div class="hmm-wheel-stage">' +
+        '<p class="hmm-serif">No fixed order. Spin for a fair pick, weighted so the same person\'s picks don\'t dominate two in a row.</p>' +
+        '<button class="hmm-btn" style="margin:0 auto" data-action="spin"' + (spinning || !movies.length ? " disabled" : "") + '>' +
+          '🎲 ' + (spinning ? "Spinning the reel..." : "Spin for tonight's pick") +
+        '</button>';
+    if (!movies.length) html += '<div class="hmm-empty">Add some movies first.</div>';
+    if (spinResult && spinResult.empty) html += '<div class="hmm-empty">You\'ve watched everything on the list. Legend.</div>';
+    if (spinResult && spinResult.preview){
+      html += '<div class="hmm-wheel-card" style="opacity:0.6"><div class="hmm-serif">' + escapeHtml(spinResult.preview.title) + '</div></div>';
+    }
+    if (spinResult && spinResult.movie){
+      var sm = spinResult.movie;
+      html += '' +
+        '<div class="hmm-wheel-card">' +
+          (sm.posterUrl ? '<img src="' + sm.posterUrl + '" alt="' + escapeHtml(sm.title) + '">' : "") +
+          '<div class="hmm-display" style="font-size:1.4rem;color:#D9631B">' + escapeHtml(sm.title) + '</div>' +
+          '<div class="hmm-card-meta">Picked by ' + escapeHtml(sm.submittedBy) + '</div>' +
+        '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderBoardTab(){
+    var movies = moviesList();
+    var totalMovies = movies.length;
+    var friends = friendsList();
+    var leaderboard = friends.map(function(name){
+      var watched = movies.filter(function(m){ return hasWatched(m.id, name); }).length;
+      return { name: name, watched: watched, pct: totalMovies ? Math.round((watched / totalMovies) * 100) : 0 };
+    }).sort(function(a, b){ return b.pct - a.pct; });
+
+    var rows = leaderboard.map(function(l){
+      return '' +
+        '<div class="hmm-leaderrow">' +
+          '<div class="name" style="color:' + (l.name === me ? "#D9631B" : "#EFE3C8") + '">' + escapeHtml(l.name) + '</div>' +
+          '<div class="track"><div class="track-fill" style="width:' + l.pct + '%"></div></div>' +
+          '<div class="pct">' + l.watched + '/' + totalMovies + '</div>' +
+        '</div>';
+    }).join("");
+
+    return '' +
+      '<div class="hmm-panel">' +
+        '<h3 class="hmm-display" style="color:#D9631B;margin-top:0">Who\'s ahead</h3>' +
+        rows +
+        (friends.length === 0 ? '<div class="hmm-empty">No one\'s signed up yet.</div>' : "") +
+      '</div>';
+  }
+
+  function renderAddTab(){
+    var movies = moviesList();
+    var friends = friendsList();
+    var mySubmitted = movies.filter(function(m){ return m.submittedBy === me && !m.classic; }).length;
+    var nonClassicCount = movies.filter(function(m){ return !m.classic; }).length;
+    var peopleCount = Math.max(friends.length, 1);
+    var suggestedEach = Math.max(1, Math.ceil(TARGET_ENTRANT_PICKS / peopleCount));
+    var remaining = Math.max(0, TARGET_ENTRANT_PICKS - nonClassicCount);
+
+    return '' +
+      '<div class="hmm-panel">' +
+        '<h3 class="hmm-display" style="color:#D9631B;margin-top:0">Nominate a film</h3>' +
+        '<div class="hmm-card-meta" style="margin-bottom:16px">' +
+          "You've added " + mySubmitted + ' so far. With ' + peopleCount + ' of you in, aim for about ' + suggestedEach +
+          ' each to fill the ' + TARGET_ENTRANT_PICKS + ' friend-picked slots (' + remaining + ' more needed). ' +
+          RESERVED_CLASSICS + ' more spots are reserved for must-watch classics, ' + TARGET_TOTAL + ' films total this month.' +
+        '</div>' +
+        '<div class="hmm-field">' +
+          '<label>Title</label>' +
+          '<input type="text" id="movie-title-input" placeholder="e.g. Suspiria (1977)">' +
+          '<div class="hmm-dupe-warning" id="dupe-warning" style="display:none"></div>' +
+        '</div>' +
+        '<div class="hmm-field" style="display:flex;align-items:center;gap:8px">' +
+          '<input type="checkbox" id="movie-classic-input" style="width:auto">' +
+          '<label for="movie-classic-input" style="margin:0">Mark as a must-watch classic</label>' +
+        '</div>' +
+        '<div class="hmm-card-meta" style="margin-bottom:12px">Poster and ratings get added by the admin once it\'s on the wall.</div>' +
+        '<button class="hmm-btn" id="add-movie-submit-btn" data-action="add-movie-submit">➕ <span id="add-movie-submit-label">Submit</span></button>' +
+      '</div>';
+  }
+
+  function renderJoinModal(){
+    if (!showAdd) return "";
+    return '' +
+      '<div class="hmm-modal-overlay" data-overlay-close="join">' +
+        '<div class="hmm-modal" data-stop>' +
+          '<h3>Join the challenge</h3>' +
+          '<div class="hmm-field">' +
+            '<label>Your name</label>' +
+            '<input type="text" id="join-name-input" placeholder="e.g. Sam">' +
+          '</div>' +
+          '<div class="hmm-modal-actions">' +
+            '<button class="hmm-btn" data-action="submit-join">Enter</button>' +
+            '<button class="hmm-btn secondary" data-action="close-join">Cancel</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderRateModal(){
+    if (!showRateMovieId) return "";
+    var m = state.movies[showRateMovieId];
+    if (!m) return "";
+    var chips = REACTION_TAGS.map(function(t){
+      return '<button type="button" class="hmm-chip' + (rateSelectedTag === t ? " active" : "") + '" data-action="select-tag" data-tag="' + escapeHtml(t) + '">' + escapeHtml(t) + '</button>';
+    }).join("");
+    return '' +
+      '<div class="hmm-modal-overlay" data-overlay-close="rate">' +
+        '<div class="hmm-modal" data-stop>' +
+          '<h3>' + escapeHtml(m.title) + '</h3>' +
+          '<div class="hmm-field">' +
+            '<label>Your rating: <span id="rate-range-val">7</span>/10</label>' +
+            '<input type="range" id="rate-range" min="1" max="10" value="7">' +
+          '</div>' +
+          '<div class="hmm-field">' +
+            '<label>Gut reaction</label>' +
+            '<div class="hmm-chip-row">' + chips + '</div>' +
+          '</div>' +
+          '<div class="hmm-field">' +
+            '<label>Full review (optional, spoilers ok, only unlocked for those who\'ve watched)</label>' +
+            '<textarea id="rate-review" placeholder="What did you think?"></textarea>' +
+          '</div>' +
+          '<div class="hmm-modal-actions">' +
+            '<button class="hmm-btn" data-action="save-rate" data-id="' + m.id + '">✓ Save &amp; tick off</button>' +
+            '<button class="hmm-btn secondary" data-action="close-rate">Cancel</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function render(){
+    var root = document.getElementById("root");
+
+    if (!initialLoaded){
+      root.innerHTML = '<div class="hmm-loading">Loading the crypt...</div>';
+      return;
+    }
+
+    var isOpen = new Date() >= CHALLENGE_OPENS;
+    var admin = isAdmin();
+    var effectiveTab = admin ? (tab === "add" ? "wall" : tab) : (isOpen ? tab : "add");
+
+    var html = renderHeader() + renderTonightStrip();
+
+    if (!me){
+      html += renderNamePicker();
+    } else {
+      html += '' +
+        '<div class="hmm-whoami">Signed in as <strong style="color:#D9631B">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
+
+      if (!isOpen && !admin){
+        html += '<div class="hmm-precrypt">Submissions only until October 1. Watching, ticking off and the leaderboard unlock then.</div>';
+      }
+      if (admin){
+        html += '<div class="hmm-precrypt">Admin view: you can see everything and manage posters/ratings, but movie submissions come from the group.</div>';
+      }
+
+      html += '<div class="hmm-nav">' +
+        '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="wall">💀 Poster Wall</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="next">🎲 What\'s Next</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="board">🏆 Leaderboard</button>' +
+        (!admin ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">➕ Submit a Movie</button>' : "") +
+        '</div>';
+
+      html += '<div class="hmm-section">';
+      if (effectiveTab === "wall") html += renderWallTab();
+      else if (effectiveTab === "next") html += renderNextTab();
+      else if (effectiveTab === "board") html += renderBoardTab();
+      else if (effectiveTab === "add") html += renderAddTab();
+      html += '</div>';
+    }
+
+    html += renderJoinModal() + renderRateModal();
+
+    root.innerHTML = html;
+    updateDupeWarning();
+  }
+
+  function updateDupeWarning(){
+    var input = document.getElementById("movie-title-input");
+    if (!input) return;
+    var trimmed = input.value.trim();
+    var dupe = trimmed ? moviesList().find(function(m){ return m.title.trim().toLowerCase() === trimmed.toLowerCase(); }) : null;
+    var warn = document.getElementById("dupe-warning");
+    var label = document.getElementById("add-movie-submit-label");
+    if (warn){
+      if (dupe){
+        warn.style.display = "";
+        warn.textContent = "Already on the wall, submitted by " + dupe.submittedBy + ".";
+      } else {
+        warn.style.display = "none";
+      }
+    }
+    if (label) label.textContent = dupe ? "Add anyway" : "Submit";
+  }
+
+  // ---- Event delegation ----
+  document.getElementById("root").addEventListener("click", function(e){
+    if (e.target.classList && e.target.classList.contains("hmm-modal-overlay")){
+      var which = e.target.getAttribute("data-overlay-close");
+      if (which === "join"){ showAdd = false; render(); }
+      if (which === "rate"){ showRateMovieId = null; render(); }
+      return;
+    }
+
+    var el = e.target.closest("[data-action]");
+    if (!el) return;
+    var action = el.dataset.action;
+
+    if (action === "pick-name") pickName(el.dataset.name);
+    else if (action === "open-join") { showAdd = true; render(); }
+    else if (action === "close-join") { showAdd = false; render(); }
+    else if (action === "submit-join") {
+      var jn = document.getElementById("join-name-input");
+      addFriend(jn ? jn.value : "");
+    }
+    else if (action === "not-you") { me = null; render(); }
+    else if (action === "toggle-tonight") toggleTonight();
+    else if (action === "set-tab") { tab = el.dataset.tab; render(); }
+    else if (action === "mark-watched") { rateSelectedTag = ""; showRateMovieId = el.dataset.id; render(); }
+    else if (action === "unwatch") unwatch(el.dataset.id);
+    else if (action === "close-rate") { showRateMovieId = null; render(); }
+    else if (action === "edit-ratings") {
+      var mv = state.movies[el.dataset.id] || {};
+      var imdb = prompt("IMDb rating (e.g. 7.4)", mv.imdb != null ? mv.imdb : "");
+      if (imdb === null) return;
+      var rt = prompt("Rotten Tomatoes % (e.g. 88)", mv.rt != null ? mv.rt : "");
+      if (rt === null) return;
+      updateMovieRatings(el.dataset.id, imdb, rt);
+    }
+    else if (action === "spin") spinWheel();
+    else if (action === "select-tag") {
+      rateSelectedTag = el.dataset.tag;
+      el.parentNode.querySelectorAll(".hmm-chip").forEach(function(c){ c.classList.toggle("active", c === el); });
+    }
+    else if (action === "save-rate") {
+      var rangeEl = document.getElementById("rate-range");
+      var reviewEl = document.getElementById("rate-review");
+      submitWatch(el.dataset.id, {
+        rating: rangeEl ? rangeEl.value : 7,
+        tag: rateSelectedTag,
+        review: reviewEl ? reviewEl.value : ""
+      });
+    }
+    else if (action === "add-movie-submit") {
+      var titleEl = document.getElementById("movie-title-input");
+      var classicEl = document.getElementById("movie-classic-input");
+      var title = titleEl ? titleEl.value.trim() : "";
+      if (!title){ alert("Give it a title first."); return; }
+      addMovie({ title: title, classic: classicEl ? classicEl.checked : false });
+      if (titleEl) titleEl.value = "";
+      if (classicEl) classicEl.checked = false;
+      updateDupeWarning();
+    }
+  });
+
+  document.getElementById("root").addEventListener("input", function(e){
+    if (e.target.id === "movie-title-input") updateDupeWarning();
+    if (e.target.id === "rate-range"){
+      var out = document.getElementById("rate-range-val");
+      if (out) out.textContent = e.target.value;
+    }
+  });
+
+  document.getElementById("root").addEventListener("change", function(e){
+    if (e.target.hasAttribute && e.target.hasAttribute("data-admin-poster")){
+      handleAdminPoster(e.target.files[0], e.target.dataset.id);
+    }
+  });
+
+  // ---- Boot ----
+  render();
+
+  Promise.all([
+    db.ref(ROOT + "friends").once("value"),
+    db.ref(ROOT + "movies").once("value"),
+    db.ref(ROOT + "watches").once("value"),
+    db.ref(ROOT + "history").once("value"),
+    db.ref(ROOT + "tonight").once("value")
+  ]).then(function(snaps){
+    state.friends = snaps[0].val() || {};
+    state.movies = snaps[1].val() || {};
+    state.watches = snaps[2].val() || {};
+    state.history = snaps[3].val() || [];
+    state.tonight = snaps[4].val() || {};
+    initialLoaded = true;
+    render();
+
+    db.ref(ROOT + "friends").on("value", function(s){ state.friends = s.val() || {}; render(); });
+    db.ref(ROOT + "movies").on("value", function(s){ state.movies = s.val() || {}; render(); });
+    db.ref(ROOT + "watches").on("value", function(s){ state.watches = s.val() || {}; render(); });
+    db.ref(ROOT + "history").on("value", function(s){ state.history = s.val() || []; render(); });
+    db.ref(ROOT + "tonight").on("value", function(s){ state.tonight = s.val() || {}; render(); });
+  }).catch(function(err){
+    document.getElementById("root").innerHTML =
+      '<div class="hmm-loading">Could not reach the crypt (' + escapeHtml(err && err.message ? err.message : "error") + '). Refresh to try again.</div>';
+  });
+})();
+</script>
+</body>
+</html>
