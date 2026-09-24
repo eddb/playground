@@ -93,16 +93,38 @@
     gap: 22px; margin-top: 20px;
   }
   .hmm-card {
-    background: var(--ink2);
-    border: 1px solid rgba(246,234,210,0.18);
-    box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
-    clip-path: polygon(0 0, 96% 0%, 100% 3%, 100% 100%, 4% 100%, 0 97%);
+    --tilt: 0deg;
+    background:
+      linear-gradient(99deg, transparent 40%, rgba(0,0,0,0.3) 41.5%, rgba(255,255,255,0.05) 43%, transparent 44.5%),
+      linear-gradient(7deg, transparent 62%, rgba(0,0,0,0.24) 63.5%, rgba(255,255,255,0.04) 65%, transparent 66.5%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.015) 0px, transparent 1px, transparent 3px, rgba(255,255,255,0.015) 4px),
+      var(--ink2);
+    border: 1px solid rgba(246,234,210,0.16);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.45), 0 3px 6px rgba(0,0,0,0.3);
     position: relative;
+    transform: rotate(var(--tilt));
     transition: transform 0.15s;
     display: flex; flex-direction: column;
   }
-  .hmm-card:hover { transform: translateY(-4px) rotate(-0.6deg); }
-  .hmm-poster-wrap { position: relative; width: 100%; aspect-ratio: 2/3; background: #0a0908; overflow: hidden; }
+  .hmm-card::before {
+    content: "";
+    position: absolute; top: -9px; left: 50%;
+    width: 54px; height: 16px;
+    background: rgba(246,234,210,0.14);
+    border: 1px solid rgba(246,234,210,0.2);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+    transform: translateX(-50%) rotate(-2deg);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .hmm-grid .hmm-card:nth-child(3n+1) { --tilt: -0.8deg; }
+  .hmm-grid .hmm-card:nth-child(3n+2) { --tilt: 0.6deg; }
+  .hmm-grid .hmm-card:nth-child(3n) { --tilt: -0.35deg; }
+  .hmm-card:hover { transform: translateY(-4px) rotate(var(--tilt)); }
+  .hmm-poster-wrap {
+    position: relative; width: 100%; aspect-ratio: 2/3; background: #0a0908; overflow: hidden;
+    clip-path: polygon(0 0, 94% 0%, 100% 6%, 100% 100%, 6% 100%, 0 94%);
+  }
   .hmm-poster-wrap img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) saturate(1.05); }
   .hmm-poster-placeholder {
     width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
@@ -579,7 +601,7 @@
     return '' +
       '<div class="hmm-tonight-strip">' +
         '<button class="hmm-btn secondary" style="padding:5px 12px;font-size:0.72rem" data-action="toggle-tonight">' +
-          '👻 ' + (mine ? "Stop watching tonight" : "I'm watching tonight") +
+          (mine ? "Stop watching tonight" : "I'm watching tonight") +
         '</button>' +
         (active.length > 0 ? '<span>Watching tonight:</span>' + pills : "") +
       '</div>';
@@ -617,7 +639,7 @@
           (m.classic ? '<div class="hmm-badge">Must-watch</div>' : '') +
           (iWatched ? '<div class="hmm-watched-badge">✓</div>' : '') +
           (isAdmin()
-            ? '<label class="hmm-admin-poster">⬆️ ' + (m.posterUrl ? "Replace poster" : "Add poster") +
+            ? '<label class="hmm-admin-poster">' + (m.posterUrl ? "Replace poster" : "Add poster") +
               '<input type="file" accept="image/*" style="display:none" data-admin-poster data-id="' + m.id + '">' +
               '</label>'
             : '') +
@@ -628,7 +650,7 @@
           '<div class="hmm-rating-badges">' +
             '<span class="hmm-rating-badge imdb"><span class="label">IMDb</span>' + (m.imdb != null ? m.imdb : "—") + '</span>' +
             '<span class="hmm-rating-badge rt"><span class="label">🍅 RT</span>' + (m.rt != null ? m.rt + '%' : "—") + '</span>' +
-            (isAdmin() ? '<button class="hmm-rating-edit" data-action="edit-ratings" data-id="' + m.id + '">✏️</button>' : "") +
+            (isAdmin() ? '<button class="hmm-rating-edit" data-action="edit-ratings" data-id="' + m.id + '">Edit</button>' : "") +
           '</div>' +
           '<div class="hmm-progress-track"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
           '<div class="hmm-card-meta">' + watchedCount + '/' + friends.length + ' watched</div>' +
@@ -638,7 +660,7 @@
               '<button class="hmm-btn danger" data-action="unwatch" data-id="' + m.id + '">Undo tick</button>'
             : '' +
               '<div class="hmm-locked">🔒 Reviews locked until you watch it</div>' +
-              '<button class="hmm-btn" data-action="mark-watched" data-id="' + m.id + '">✓ Mark watched</button>') +
+              '<button class="hmm-btn" data-action="mark-watched" data-id="' + m.id + '">Mark watched</button>') +
         '</div>' +
       '</div>';
   }
@@ -655,7 +677,7 @@
       '<div class="hmm-wheel-stage">' +
         '<p class="hmm-serif">No fixed order. Spin for a fair pick, weighted so the same person\'s picks don\'t dominate two in a row.</p>' +
         '<button class="hmm-btn" style="margin:0 auto" data-action="spin"' + (spinning || !movies.length ? " disabled" : "") + '>' +
-          '🎲 ' + (spinning ? "Spinning the reel..." : "Spin for tonight's pick") +
+          (spinning ? "Spinning the reel..." : "Spin for tonight's pick") +
         '</button>';
     if (!movies.length) html += '<div class="hmm-empty">Add some movies first.</div>';
     if (spinResult && spinResult.empty) html += '<div class="hmm-empty">You\'ve watched everything on the list. Legend.</div>';
@@ -727,7 +749,7 @@
           '<label for="movie-classic-input" style="margin:0">Mark as a must-watch classic (unlimited)</label>' +
         '</div>' +
         '<div class="hmm-card-meta" style="margin-bottom:12px">Poster and ratings get added by the admin once it\'s on the wall.</div>' +
-        '<button class="hmm-btn" id="add-movie-submit-btn" data-action="add-movie-submit">➕ <span id="add-movie-submit-label">Submit</span></button>' +
+        '<button class="hmm-btn" id="add-movie-submit-btn" data-action="add-movie-submit"><span id="add-movie-submit-label">Submit</span></button>' +
       '</div>';
   }
 
@@ -764,7 +786,7 @@
             '<textarea id="rate-review" placeholder="What did you think?"></textarea>' +
           '</div>' +
           '<div class="hmm-modal-actions">' +
-            '<button class="hmm-btn" data-action="save-rate" data-id="' + showRateMovieId + '">✓ Save &amp; tick off</button>' +
+            '<button class="hmm-btn" data-action="save-rate" data-id="' + showRateMovieId + '">Save &amp; tick off</button>' +
             '<button class="hmm-btn secondary" data-action="close-rate">Cancel</button>' +
           '</div>' +
         '</div>' +
@@ -808,10 +830,10 @@
       }
 
       html += '<div class="hmm-nav">' +
-        '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="wall">💀 Poster Wall</button>' +
-        '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="next">🎲 What\'s Next</button>' +
-        '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="board">🏆 Leaderboard</button>' +
-        (!admin ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">➕ Submit a Movie</button>' : "") +
+        '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="wall">Poster Wall</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="next">What\'s Next</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="board">Leaderboard</button>' +
+        (!admin ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">Submit a Movie</button>' : "") +
         '</div>';
 
       html += '<div class="hmm-section">';
