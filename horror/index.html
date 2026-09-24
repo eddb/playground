@@ -266,6 +266,13 @@
     padding: 3px 10px; border-radius: 12px; font-size: 0.72rem;
   }
   .hmm-empty { text-align: center; padding: 40px 16px; color: var(--bone2); opacity: 0.7; }
+  .hmm-footer {
+    max-width: 520px; margin: 46px auto 0; padding: 16px 20px 0;
+    border-top: 1px solid rgba(246,234,210,0.12);
+    text-align: center; font-size: 0.62rem; line-height: 1.7;
+    color: var(--bone2); opacity: 0.55;
+    font-family: 'Special Elite', monospace; font-weight: bold; letter-spacing: 0.3px;
+  }
   .hmm-loading { min-height: 100vh; background: #1C1917; display: flex; align-items: center; justify-content: center; color: #F6EAD2; font-family: 'Special Elite', monospace; }
 </style>
 </head>
@@ -764,6 +771,15 @@
       '</div>';
   }
 
+  function renderFooter(){
+    return '' +
+      '<div class="hmm-footer">' +
+        '&copy; ' + new Date().getFullYear() + ' Oi Oi Ltd. All rites reserved.<br>' +
+        'Registered in England &amp; Wales under the Crypts Act 1348. Company No. 000-BOO.<br>' +
+        'Not liable for nightmares, jump scares, or regrettable 2am viewing choices.' +
+      '</div>';
+  }
+
   function render(){
     var root = document.getElementById("root");
 
@@ -806,6 +822,7 @@
       html += '</div>';
     }
 
+    html += renderFooter();
     html += renderRateModal();
 
     root.innerHTML = html;
