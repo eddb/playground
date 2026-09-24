@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Butcherman&family=Creepster&family=Special+Elite&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -40,9 +40,8 @@
   }
   .hmm-root > * { position: relative; z-index: 2; }
   .hmm-root * { box-sizing: border-box; }
-  .hmm-display { font-family: 'Butcherman', cursive; letter-spacing: 1px; }
-  .hmm-display-sm { font-family: 'Creepster', cursive; letter-spacing: 1px; }
-  .hmm-serif { font-family: 'Libre Baskerville', serif; }
+  .hmm-display, .hmm-display-sm { font-family: 'Creepster', cursive; letter-spacing: 1px; }
+  .hmm-serif { font-family: 'Special Elite', monospace; }
   .hmm-header {
     text-align: center;
     padding: 32px 16px 22px;
@@ -63,7 +62,7 @@
       drop-shadow(6px 6px 0 var(--ink))
       drop-shadow(0 0 36px rgba(217,80,63,0.4));
   }
-  .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Libre Baskerville', serif; font-style: italic; }
+  .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Special Elite', monospace; font-weight: bold; letter-spacing: 0.3px; }
   .hmm-countdown {
     display: inline-flex; align-items: center; gap: 8px;
     margin-top: 16px; padding: 8px 20px;
@@ -154,7 +153,7 @@
   .hmm-field label { display: block; font-size: 0.72rem; color: var(--bone2); margin-bottom: 5px; }
   .hmm-field input[type=text], .hmm-field input[type=number], .hmm-field textarea, .hmm-field select {
     width: 100%; background: var(--ink); border: 1px solid rgba(246,234,210,0.25); color: var(--bone);
-    padding: 8px 10px; font-family: 'Libre Baskerville', serif; font-size: 0.9rem; border-radius: 2px;
+    padding: 8px 10px; font-family: 'Special Elite', monospace; font-size: 0.9rem; border-radius: 2px;
   }
   .hmm-field textarea { min-height: 80px; resize: vertical; }
   .hmm-dupe-warning { color: var(--pumpkin); font-size: 0.72rem; margin-top: 6px; }
@@ -267,7 +266,7 @@
     padding: 3px 10px; border-radius: 12px; font-size: 0.72rem;
   }
   .hmm-empty { text-align: center; padding: 40px 16px; color: var(--bone2); opacity: 0.7; }
-  .hmm-loading { min-height: 100vh; background: #1C1917; display: flex; align-items: center; justify-content: center; color: #F6EAD2; font-family: serif; }
+  .hmm-loading { min-height: 100vh; background: #1C1917; display: flex; align-items: center; justify-content: center; color: #F6EAD2; font-family: 'Special Elite', monospace; }
 </style>
 </head>
 <body>
