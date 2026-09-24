@@ -14,21 +14,20 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   .hmm-root {
-    --ink: #0C0A08;
-    --ink2: #1D1712;
-    --bone: #F1E6C8;
-    --bone2: #D9C79E;
-    --pumpkin: #E2660F;
-    --blood: #8C1C13;
-    --toxic: #8FAE3D;
-    --violet: #4B3B63;
-    --mustard: #D7A32A;
+    --ink: #1C1917;
+    --ink2: #262019;
+    --bone: #F6EAD2;
+    --bone2: #CDB996;
+    --pumpkin: #D9503F;
+    --blood: #7A2A1E;
+    --toxic: #5F83A0;
+    --mustard: #DBA85A;
     min-height: 100vh;
     position: relative;
     background:
-      radial-gradient(ellipse at 20% 0%, rgba(140,28,19,0.35), transparent 55%),
-      radial-gradient(ellipse at 85% 15%, rgba(215,163,42,0.12), transparent 45%),
-      repeating-radial-gradient(circle at 0 0, rgba(241,230,200,0.035) 0, rgba(241,230,200,0.035) 1px, transparent 1px, transparent 4px),
+      radial-gradient(ellipse at 20% 0%, rgba(122,42,30,0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(219,168,90,0.12), transparent 45%),
+      repeating-radial-gradient(circle at 0 0, rgba(246,234,210,0.035) 0, rgba(246,234,210,0.035) 1px, transparent 1px, transparent 4px),
       var(--ink);
     color: var(--bone);
     font-family: 'Special Elite', 'Courier New', monospace;
@@ -47,51 +46,49 @@
   .hmm-serif { font-family: 'Libre Baskerville', serif; }
   .hmm-header {
     text-align: center;
-    padding: 36px 16px 22px;
+    padding: 32px 16px 22px;
     border-bottom: 4px solid var(--pumpkin);
     box-shadow: 0 4px 0 var(--blood);
     position: relative;
-    background: linear-gradient(180deg, rgba(140,28,19,0.18), transparent);
+    background: linear-gradient(180deg, rgba(122,42,30,0.18), transparent);
   }
   .hmm-header-icon { font-size: 1.9rem; }
-  .hmm-title {
-    font-family: 'Butcherman', cursive;
-    font-size: clamp(2.6rem, 9vw, 5.2rem);
-    color: var(--mustard);
-    text-shadow:
-      4px 4px 0 var(--blood),
-      7px 7px 0 var(--ink),
-      0 0 40px rgba(226,102,15,0.5);
-    margin: 6px 0 0;
-    transform: skew(-3deg);
-    text-transform: uppercase;
+  .hmm-logo {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 8px auto 0;
+    filter:
+      drop-shadow(3px 3px 0 var(--blood))
+      drop-shadow(6px 6px 0 var(--ink))
+      drop-shadow(0 0 36px rgba(217,80,63,0.4));
   }
   .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Libre Baskerville', serif; font-style: italic; }
   .hmm-countdown {
     display: inline-flex; align-items: center; gap: 8px;
     margin-top: 16px; padding: 8px 20px;
     border: 2px solid var(--pumpkin); border-radius: 2px;
-    background: rgba(226,102,15,0.1);
+    background: rgba(217,80,63,0.12);
     font-size: 0.8rem;
     transform: rotate(-1deg);
   }
+  .hmm-progress-panel {
+    max-width: 520px; margin: 18px auto 0; padding: 14px 20px;
+    text-align: center;
+  }
+  .hmm-progress-panel-head { font-family: 'Creepster', cursive; font-size: 1.3rem; color: var(--mustard); letter-spacing: 0.5px; }
+  .hmm-progress-panel-sub { font-size: 0.72rem; color: var(--bone2); margin-top: 8px; }
+  .hmm-progress-track.big { height: 12px; margin-top: 8px; }
   .hmm-precrypt {
     text-align: center; font-size: 0.78rem; color: var(--mustard);
-    background: rgba(215,163,42,0.1); border-top: 1px solid rgba(215,163,42,0.3); border-bottom: 1px solid rgba(215,163,42,0.3);
+    background: rgba(219,168,90,0.1); border-top: 1px solid rgba(219,168,90,0.3); border-bottom: 1px solid rgba(219,168,90,0.3);
     padding: 8px 16px; margin-top: 8px;
   }
   .hmm-nav {
-    display: flex; justify-content: center; gap: 8px;
-    padding: 16px; flex-wrap: wrap;
+    display: flex; justify-content: center; gap: 10px;
+    padding: 20px 16px; flex-wrap: wrap;
   }
-  .hmm-tab {
-    background: transparent; border: 1px solid var(--bone2); color: var(--bone2);
-    padding: 8px 16px; cursor: pointer; font-family: 'Special Elite', monospace;
-    font-size: 0.8rem; border-radius: 2px; display: flex; align-items: center; gap: 6px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .hmm-tab.active { background: var(--pumpkin); border-color: var(--pumpkin); color: var(--ink); font-weight: bold; box-shadow: 2px 2px 0 var(--blood); }
-  .hmm-tab:disabled { opacity: 0.35; cursor: not-allowed; }
   .hmm-section { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
   .hmm-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -99,7 +96,7 @@
   }
   .hmm-card {
     background: var(--ink2);
-    border: 1px solid rgba(241,230,200,0.18);
+    border: 1px solid rgba(246,234,210,0.18);
     box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
     clip-path: polygon(0 0, 96% 0%, 100% 3%, 100% 100%, 4% 100%, 0 97%);
     position: relative;
@@ -112,7 +109,7 @@
   .hmm-poster-placeholder {
     width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
     color: var(--bone2); opacity: 0.4; flex-direction: column; gap: 6px;
-    background: repeating-linear-gradient(45deg, rgba(241,230,200,0.03) 0, rgba(241,230,200,0.03) 8px, transparent 8px, transparent 16px);
+    background: repeating-linear-gradient(45deg, rgba(246,234,210,0.03) 0, rgba(246,234,210,0.03) 8px, transparent 8px, transparent 16px);
   }
   .hmm-poster-placeholder .glyph { font-size: 2rem; }
   .hmm-badge {
@@ -134,22 +131,15 @@
   .hmm-card-body { padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
   .hmm-card-title { font-size: 1.15rem; color: var(--mustard); line-height: 1.2; text-transform: uppercase; }
   .hmm-card-meta { font-size: 0.7rem; color: var(--bone2); opacity: 0.8; }
-  .hmm-ratings { display: flex; gap: 10px; font-size: 0.7rem; opacity: 0.9; align-items: center; }
-  .hmm-ratings button { background: none; border: none; color: var(--bone2); cursor: pointer; padding: 0; font-size: 0.75rem; }
-  .hmm-progress-track { height: 6px; background: rgba(241,230,200,0.12); border-radius: 3px; overflow: hidden; border: 1px solid rgba(241,230,200,0.15); }
+  .hmm-rating-badges { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .hmm-rating-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 4px; font-size: 0.72rem; font-weight: bold; line-height: 1; }
+  .hmm-rating-badge .label { font-size: 0.58rem; letter-spacing: 0.4px; opacity: 0.85; text-transform: uppercase; }
+  .hmm-rating-badge.imdb { background: #F5C518; color: #000; }
+  .hmm-rating-badge.rt { background: #FA320A; color: #fff; }
+  .hmm-rating-edit { background: none; border: none; color: var(--bone2); cursor: pointer; padding: 2px; font-size: 0.8rem; }
+  .hmm-rating-edit:hover { color: var(--bone); }
+  .hmm-progress-track { height: 6px; background: rgba(246,234,210,0.12); border-radius: 3px; overflow: hidden; border: 1px solid rgba(246,234,210,0.15); }
   .hmm-progress-fill { height: 100%; background: linear-gradient(90deg, var(--toxic), var(--mustard)); }
-  .hmm-btn {
-    background: var(--pumpkin); color: var(--ink); border: 2px solid var(--ink);
-    padding: 10px 14px; font-family: 'Special Elite', monospace; font-size: 0.8rem; cursor: pointer;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold;
-    box-shadow: 2px 2px 0 var(--blood);
-    transition: transform 0.1s;
-  }
-  .hmm-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--blood); }
-  .hmm-btn.secondary { background: transparent; border: 1px solid var(--bone2); color: var(--bone); box-shadow: none; }
-  .hmm-btn.danger { background: transparent; border: 1px solid var(--blood); color: var(--blood); box-shadow: none; }
-  .hmm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
   .hmm-locked { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--bone2); opacity: 0.7; }
   .hmm-modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
@@ -164,33 +154,104 @@
   .hmm-field { margin-bottom: 14px; }
   .hmm-field label { display: block; font-size: 0.72rem; color: var(--bone2); margin-bottom: 5px; }
   .hmm-field input[type=text], .hmm-field input[type=number], .hmm-field textarea, .hmm-field select {
-    width: 100%; background: var(--ink); border: 1px solid rgba(239,227,200,0.25); color: var(--bone);
+    width: 100%; background: var(--ink); border: 1px solid rgba(246,234,210,0.25); color: var(--bone);
     padding: 8px 10px; font-family: 'Libre Baskerville', serif; font-size: 0.9rem; border-radius: 2px;
   }
   .hmm-field textarea { min-height: 80px; resize: vertical; }
-  .hmm-field input[type=range] { width: 100%; }
   .hmm-dupe-warning { color: var(--mustard); font-size: 0.72rem; margin-top: 6px; }
-  .hmm-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* ---- mechanical-keycap buttons ---- */
+  .hmm-btn, .hmm-tab, .hmm-chip, .hmm-key {
+    font-family: 'Special Elite', monospace;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 7px;
+    transition: transform 0.05s linear, box-shadow 0.05s linear;
+  }
+  .hmm-btn {
+    padding: 11px 16px; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.5px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
+    border: 1px solid #5c1f16;
+    color: var(--ink);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -3px 4px rgba(0,0,0,0.15),
+      0 4px 0 var(--blood),
+      0 7px 10px rgba(0,0,0,0.45);
+  }
+  .hmm-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -3px 4px rgba(0,0,0,0.15), 0 5px 0 var(--blood), 0 9px 12px rgba(0,0,0,0.45); }
+  .hmm-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 0 0 var(--blood), 0 1px 3px rgba(0,0,0,0.4); }
+  .hmm-btn.secondary {
+    background: linear-gradient(180deg, #362D22 0%, var(--ink2) 55%, #17130F 100%);
+    border: 1px solid rgba(246,234,210,0.3); color: var(--bone);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 3px 0 #0A0806, 0 5px 8px rgba(0,0,0,0.4);
+  }
+  .hmm-btn.secondary:hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 0 #0A0806, 0 7px 10px rgba(0,0,0,0.4); }
+  .hmm-btn.secondary:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 #0A0806, 0 1px 3px rgba(0,0,0,0.4); }
+  .hmm-btn.danger {
+    background: linear-gradient(180deg, #3E2621 0%, #2A1815 55%, #180D0B 100%);
+    border: 1px solid var(--blood); color: #E8A99C;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 0 #451810, 0 5px 8px rgba(0,0,0,0.4);
+  }
+  .hmm-btn.danger:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 #451810, 0 1px 3px rgba(0,0,0,0.4); }
+  .hmm-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
+  .hmm-tab {
+    background: linear-gradient(180deg, #362D22 0%, var(--ink2) 55%, #17130F 100%);
+    border: 1px solid rgba(246,234,210,0.25); color: var(--bone2);
+    padding: 9px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 3px 0 #0A0806, 0 5px 7px rgba(0,0,0,0.35);
+  }
+  .hmm-tab:hover:not(:disabled):not(.active) { transform: translateY(-1px); }
+  .hmm-tab.active {
+    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
+    border-color: #5c1f16; color: var(--ink); font-weight: bold;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -3px 4px rgba(0,0,0,0.15), 0 4px 0 var(--blood), 0 6px 9px rgba(0,0,0,0.4);
+    transform: translateY(1px);
+  }
+  .hmm-tab:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
   .hmm-chip {
-    border: 1px solid rgba(239,227,200,0.3); background: transparent; color: var(--bone2);
-    padding: 5px 10px; border-radius: 12px; font-size: 0.7rem; cursor: pointer;
+    border: 1px solid rgba(246,234,210,0.3); background: linear-gradient(180deg, #302823 0%, var(--ink2) 100%);
+    color: var(--bone2); padding: 6px 12px; font-size: 0.7rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 0 #0A0806, 0 3px 5px rgba(0,0,0,0.3);
   }
-  .hmm-chip.active { background: var(--toxic); border-color: var(--toxic); color: var(--ink); font-weight: bold; }
+  .hmm-chip.active {
+    background: linear-gradient(180deg, #7FA6C2 0%, var(--toxic) 60%, #3E617A 100%);
+    border-color: #2E4A5C; color: var(--ink); font-weight: bold;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 2px 0 #2E4A5C, 0 3px 5px rgba(0,0,0,0.35);
+    transform: translateY(1px);
+  }
+  .hmm-key-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hmm-key {
+    width: 42px; height: 42px; font-size: 1rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, #3A3128 0%, var(--ink2) 55%, #17130F 100%);
+    border: 1px solid rgba(246,234,210,0.25); color: var(--bone);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 3px 0 #0A0806, 0 4px 6px rgba(0,0,0,0.4);
+  }
+  .hmm-key:hover:not(:disabled) { transform: translateY(-1px); }
+  .hmm-key.active {
+    background: linear-gradient(180deg, #EA8871 0%, var(--pumpkin) 55%, #B8402F 100%);
+    border-color: #5c1f16; color: var(--ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 3px 0 var(--blood), 0 5px 7px rgba(0,0,0,0.4);
+    transform: translateY(1px);
+  }
+  .hmm-key.banned {
+    opacity: 0.35; text-decoration: line-through; cursor: not-allowed;
+    box-shadow: none; border-style: dashed;
+  }
+  .hmm-key:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 0 0 var(--blood), 0 1px 2px rgba(0,0,0,0.4); }
+  .hmm-key-hint { font-size: 0.68rem; color: var(--bone2); opacity: 0.7; margin-top: 6px; }
+
   .hmm-modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-  .hmm-name-picker {
-    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 24px;
-  }
-  .hmm-name-btn {
-    background: var(--ink2); border: 1px solid var(--bone2); color: var(--bone);
-    padding: 10px 18px; border-radius: 2px; cursor: pointer; font-family: 'Special Elite', monospace;
-  }
-  .hmm-name-btn:hover { border-color: var(--pumpkin); color: var(--pumpkin); }
   .hmm-whoami { text-align: center; padding: 10px 16px; font-size: 0.75rem; color: var(--bone2); }
   .hmm-whoami button { background: none; border: none; color: var(--pumpkin); text-decoration: underline; cursor: pointer; font-family: inherit; }
-  .hmm-panel { background: var(--ink2); border: 1px solid rgba(241,230,200,0.18); box-shadow: 4px 4px 0 rgba(0,0,0,0.35); padding: 22px; border-radius: 3px; margin-top: 20px; }
-  .hmm-leaderrow { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(239,227,200,0.08); }
+  .hmm-panel { background: var(--ink2); border: 1px solid rgba(246,234,210,0.18); box-shadow: 4px 4px 0 rgba(0,0,0,0.35); padding: 22px; border-radius: 3px; margin-top: 20px; }
+  .hmm-leaderrow { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(246,234,210,0.08); }
   .hmm-leaderrow .name { width: 110px; font-size: 0.85rem; flex-shrink: 0; }
-  .hmm-leaderrow .track { flex: 1; height: 8px; background: rgba(239,227,200,0.1); border-radius: 4px; overflow: hidden; }
+  .hmm-leaderrow .track { flex: 1; height: 8px; background: rgba(246,234,210,0.1); border-radius: 4px; overflow: hidden; }
   .hmm-leaderrow .track-fill { height: 100%; background: linear-gradient(90deg, var(--blood), var(--pumpkin)); }
   .hmm-leaderrow .pct { width: 44px; text-align: right; font-size: 0.78rem; color: var(--bone2); }
   .hmm-wheel-stage { text-align: center; padding: 30px 16px; }
@@ -205,11 +266,11 @@
     padding: 12px 16px; margin-top: 10px; font-size: 0.78rem; color: var(--bone2);
   }
   .hmm-tonight-pill {
-    background: rgba(124,154,60,0.15); border: 1px solid var(--toxic); color: var(--toxic);
+    background: rgba(95,131,160,0.18); border: 1px solid var(--toxic); color: var(--toxic);
     padding: 3px 10px; border-radius: 12px; font-size: 0.72rem;
   }
   .hmm-empty { text-align: center; padding: 40px 16px; color: var(--bone2); opacity: 0.7; }
-  .hmm-loading { min-height: 100vh; background: #100E0C; display: flex; align-items: center; justify-content: center; color: #EFE3C8; font-family: serif; }
+  .hmm-loading { min-height: 100vh; background: #1C1917; display: flex; align-items: center; justify-content: center; color: #F6EAD2; font-family: serif; }
 </style>
 </head>
 <body>
@@ -253,10 +314,12 @@
     "The ritual needs names.",
     "Who dares enter?"
   ];
-  var TARGET_TOTAL = 15;
+  var TARGET_TOTAL = 16;
   var RESERVED_CLASSICS = 3;
   var TARGET_ENTRANT_PICKS = TARGET_TOTAL - RESERVED_CLASSICS;
+  var MAX_PICKS_PER_PERSON = 3;
   var TONIGHT_WINDOW_MS = 1000 * 60 * 60 * 20;
+  var BANNED_SCORE = 7;
 
   function uid(){
     return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -274,6 +337,9 @@
     var slug = String(name).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     return slug || ("friend-" + Math.random().toString(36).slice(2, 8));
   }
+  function isAdminName(name){
+    return !!name && name.trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+  }
 
   // ---- Shared state (mirrors Firebase) ----
   var state = { friends: {}, movies: {}, watches: {}, history: [], tonight: {} };
@@ -282,16 +348,21 @@
   // ---- Local/UI state ----
   var me = localStorage.getItem(NAME_KEY) || null;
   var tab = "wall";
-  var showAdd = false;
   var showRateMovieId = null;
   var spinResult = null;
   var spinning = false;
   var rateSelectedTag = "";
+  var rateSelectedScore = null;
   var joinPhrase = JOIN_PHRASES[Math.floor(Math.random() * JOIN_PHRASES.length)];
 
-  function friendsList(){
+  // Every friend that has ever signed in, including the hidden admin account.
+  function rawFriends(){
     var f = state.friends || {};
     return Object.keys(f).map(function(k){ return f[k]; });
+  }
+  // The public roster: never surfaces the admin account.
+  function friendsList(){
+    return rawFriends().filter(function(f){ return !isAdminName(f); });
   }
   function moviesList(){
     var m = state.movies || {};
@@ -314,12 +385,12 @@
   function activeTonight(){
     var t = state.tonight || {};
     return Object.keys(t).map(function(k){ return t[k]; }).filter(function(e){
-      return Date.now() - e.ts < TONIGHT_WINDOW_MS;
+      return Date.now() - e.ts < TONIGHT_WINDOW_MS && !isAdminName(e.name);
     });
   }
 
   function isAdmin(){
-    return !!me && me.trim().toLowerCase() === ADMIN_NAME.toLowerCase();
+    return isAdminName(me);
   }
 
   // ---- Mutations ----
@@ -332,11 +403,10 @@
   function addFriend(rawName){
     var trimmed = (rawName || "").trim();
     if (!trimmed) return;
-    var existing = friendsList().find(function(f){ return f.toLowerCase() === trimmed.toLowerCase(); });
-    if (existing){ pickName(existing); showAdd = false; render(); return; }
+    var existing = rawFriends().find(function(f){ return f.toLowerCase() === trimmed.toLowerCase(); });
+    if (existing){ pickName(existing); return; }
     var key = friendKey(trimmed);
     db.ref(ROOT + "friends/" + key).set(trimmed).then(function(){
-      showAdd = false;
       pickName(trimmed);
     });
   }
@@ -466,7 +536,7 @@
     return '' +
       '<div class="hmm-header">' +
         '<div class="hmm-header-icon">💀</div>' +
-        '<h1 class="hmm-title">Horror Month</h1>' +
+        '<img class="hmm-logo" src="horror-month-logo.png" alt="Horror Month">' +
         '<div class="hmm-sub hmm-serif">A closed-circle October challenge. Watch at your own pace, no order required.</div>' +
         '<div class="hmm-countdown">🔥 ' +
           (daysLeft > 0 ? (daysLeft + " days until Halloween") : "It's Halloween. Godspeed.") +
@@ -474,8 +544,32 @@
       '</div>';
   }
 
+  function renderProgress(){
+    var movies = moviesList();
+    var nonClassicCount = movies.filter(function(m){ return !m.classic; }).length;
+    var classicCount = movies.filter(function(m){ return m.classic; }).length;
+    var entrantFilled = Math.min(nonClassicCount, TARGET_ENTRANT_PICKS);
+    var classicFilled = Math.min(classicCount, RESERVED_CLASSICS);
+    var totalFilled = entrantFilled + classicFilled;
+    var pct = Math.round((totalFilled / TARGET_TOTAL) * 100);
+
+    var entrantNote = nonClassicCount > TARGET_ENTRANT_PICKS
+      ? (TARGET_ENTRANT_PICKS + '/' + TARGET_ENTRANT_PICKS + ' picks full — ' + (nonClassicCount - TARGET_ENTRANT_PICKS) + ' extra waiting')
+      : (nonClassicCount + '/' + TARGET_ENTRANT_PICKS + ' picks');
+    var classicNote = classicCount > RESERVED_CLASSICS
+      ? (RESERVED_CLASSICS + '/' + RESERVED_CLASSICS + ' classic slots — ' + classicCount + ' suggested')
+      : (classicCount + '/' + RESERVED_CLASSICS + ' classic slots');
+
+    return '' +
+      '<div class="hmm-progress-panel">' +
+        '<div class="hmm-progress-panel-head">' + totalFilled + ' / ' + TARGET_TOTAL + ' films locked in</div>' +
+        '<div class="hmm-progress-track big"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="hmm-progress-panel-sub">' + entrantNote + ' · ' + classicNote + '</div>' +
+      '</div>';
+  }
+
   function renderTonightStrip(){
-    if (!me) return "";
+    if (!me || isAdmin()) return "";
     var active = activeTonight();
     var mine = active.find(function(t){ return t.name === me; });
     var pills = active.map(function(t){ return '<span class="hmm-tonight-pill">' + escapeHtml(t.name) + '</span>'; }).join("");
@@ -490,18 +584,15 @@
 
   function renderNamePicker(){
     var isOpen = new Date() >= CHALLENGE_OPENS;
-    var friends = friendsList();
-    var friendBtns = friends.map(function(f){
-      return '<button class="hmm-name-btn" data-action="pick-name" data-name="' + escapeHtml(f) + '">' + escapeHtml(f) + '</button>';
-    }).join("");
     return '' +
       '<div class="hmm-section">' +
         '<div style="text-align:center;margin-top:30px">' +
           '<p class="hmm-serif">' + escapeHtml(isOpen ? "Who's crawling in tonight?" : joinPhrase) + '</p>' +
-          '<div class="hmm-name-picker">' +
-            friendBtns +
-            '<button class="hmm-name-btn" data-action="open-join" style="border-style:dashed">➕ Add my name</button>' +
+          '<div class="hmm-field" style="max-width:280px;margin:20px auto 0;text-align:left">' +
+            '<label>Your first name</label>' +
+            '<input type="text" id="name-entry-input" placeholder="e.g. Sam" autocomplete="given-name">' +
           '</div>' +
+          '<button class="hmm-btn" data-action="submit-name" style="margin:14px auto 0">Enter the crypt</button>' +
         '</div>' +
       '</div>';
   }
@@ -531,16 +622,16 @@
         '<div class="hmm-card-body">' +
           '<div class="hmm-card-title hmm-display-sm">' + escapeHtml(m.title) + '</div>' +
           '<div class="hmm-card-meta">Picked by ' + escapeHtml(m.submittedBy) + '</div>' +
-          '<div class="hmm-ratings">' +
-            '<span>IMDb ' + (m.imdb != null ? m.imdb : "—") + '</span>' +
-            '<span>RT ' + (m.rt != null ? m.rt : "—") + '%</span>' +
-            (isAdmin() ? '<button data-action="edit-ratings" data-id="' + m.id + '">✏️</button>' : "") +
+          '<div class="hmm-rating-badges">' +
+            '<span class="hmm-rating-badge imdb"><span class="label">IMDb</span>' + (m.imdb != null ? m.imdb : "—") + '</span>' +
+            '<span class="hmm-rating-badge rt"><span class="label">🍅 RT</span>' + (m.rt != null ? m.rt + '%' : "—") + '</span>' +
+            (isAdmin() ? '<button class="hmm-rating-edit" data-action="edit-ratings" data-id="' + m.id + '">✏️</button>' : "") +
           '</div>' +
           '<div class="hmm-progress-track"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
           '<div class="hmm-card-meta">' + watchedCount + '/' + friends.length + ' watched</div>' +
           (iWatched
             ? '' +
-              '<div class="hmm-card-meta" style="color:#7C9A3C">Group score: ' + (avgFriendScore != null ? avgFriendScore : "—") + '/10 from ' + ratings.length + ' watcher' + (ratings.length === 1 ? "" : "s") + '</div>' +
+              '<div class="hmm-card-meta" style="color:var(--toxic)">Group score: ' + (avgFriendScore != null ? avgFriendScore : "—") + '/10 from ' + ratings.length + ' watcher' + (ratings.length === 1 ? "" : "s") + '</div>' +
               '<button class="hmm-btn danger" data-action="unwatch" data-id="' + m.id + '">Undo tick</button>'
             : '' +
               '<div class="hmm-locked">🔒 Reviews locked until you watch it</div>' +
@@ -573,7 +664,7 @@
       html += '' +
         '<div class="hmm-wheel-card">' +
           (sm.posterUrl ? '<img src="' + sm.posterUrl + '" alt="' + escapeHtml(sm.title) + '">' : "") +
-          '<div class="hmm-display" style="font-size:1.4rem;color:#D9631B">' + escapeHtml(sm.title) + '</div>' +
+          '<div class="hmm-display" style="font-size:1.4rem;color:var(--pumpkin)">' + escapeHtml(sm.title) + '</div>' +
           '<div class="hmm-card-meta">Picked by ' + escapeHtml(sm.submittedBy) + '</div>' +
         '</div>';
     }
@@ -593,7 +684,7 @@
     var rows = leaderboard.map(function(l){
       return '' +
         '<div class="hmm-leaderrow">' +
-          '<div class="name" style="color:' + (l.name === me ? "#D9631B" : "#EFE3C8") + '">' + escapeHtml(l.name) + '</div>' +
+          '<div class="name" style="color:' + (l.name === me ? "var(--pumpkin)" : "var(--bone)") + '">' + escapeHtml(l.name) + '</div>' +
           '<div class="track"><div class="track-fill" style="width:' + l.pct + '%"></div></div>' +
           '<div class="pct">' + l.watched + '/' + totalMovies + '</div>' +
         '</div>';
@@ -601,7 +692,7 @@
 
     return '' +
       '<div class="hmm-panel">' +
-        '<h3 class="hmm-display" style="color:#D9631B;margin-top:0">Who\'s ahead</h3>' +
+        '<h3 class="hmm-display" style="color:var(--pumpkin);margin-top:0">Who\'s ahead</h3>' +
         rows +
         (friends.length === 0 ? '<div class="hmm-empty">No one\'s signed up yet.</div>' : "") +
       '</div>';
@@ -609,20 +700,19 @@
 
   function renderAddTab(){
     var movies = moviesList();
-    var friends = friendsList();
     var mySubmitted = movies.filter(function(m){ return m.submittedBy === me && !m.classic; }).length;
     var nonClassicCount = movies.filter(function(m){ return !m.classic; }).length;
-    var peopleCount = Math.max(friends.length, 1);
-    var suggestedEach = Math.max(1, Math.ceil(TARGET_ENTRANT_PICKS / peopleCount));
     var remaining = Math.max(0, TARGET_ENTRANT_PICKS - nonClassicCount);
+    var capLeft = Math.max(0, MAX_PICKS_PER_PERSON - mySubmitted);
 
     return '' +
       '<div class="hmm-panel">' +
-        '<h3 class="hmm-display" style="color:#D9631B;margin-top:0">Nominate a film</h3>' +
+        '<h3 class="hmm-display" style="color:var(--pumpkin);margin-top:0">Nominate a film</h3>' +
         '<div class="hmm-card-meta" style="margin-bottom:16px">' +
-          "You've added " + mySubmitted + ' so far. With ' + peopleCount + ' of you in, aim for about ' + suggestedEach +
-          ' each to fill the ' + TARGET_ENTRANT_PICKS + ' friend-picked slots (' + remaining + ' more needed). ' +
-          RESERVED_CLASSICS + ' more spots are reserved for must-watch classics, ' + TARGET_TOTAL + ' films total this month.' +
+          "You've used " + mySubmitted + ' of your ' + MAX_PICKS_PER_PERSON + ' picks' +
+          (capLeft > 0 ? ' (' + capLeft + ' left).' : ' — that\'s your lot for regular picks.') +
+          ' Classics are unlimited — suggest as many as you like, though only ' + RESERVED_CLASSICS + ' will make the final cut. ' +
+          'We need ' + TARGET_ENTRANT_PICKS + ' friend-picked films (' + remaining + ' more needed) plus ' + RESERVED_CLASSICS + ' classics for ' + TARGET_TOTAL + ' total this month.' +
         '</div>' +
         '<div class="hmm-field">' +
           '<label>Title</label>' +
@@ -631,29 +721,15 @@
         '</div>' +
         '<div class="hmm-field" style="display:flex;align-items:center;gap:8px">' +
           '<input type="checkbox" id="movie-classic-input" style="width:auto">' +
-          '<label for="movie-classic-input" style="margin:0">Mark as a must-watch classic</label>' +
+          '<label for="movie-classic-input" style="margin:0">Mark as a must-watch classic (unlimited)</label>' +
         '</div>' +
         '<div class="hmm-card-meta" style="margin-bottom:12px">Poster and ratings get added by the admin once it\'s on the wall.</div>' +
         '<button class="hmm-btn" id="add-movie-submit-btn" data-action="add-movie-submit">➕ <span id="add-movie-submit-label">Submit</span></button>' +
       '</div>';
   }
 
-  function renderJoinModal(){
-    if (!showAdd) return "";
-    return '' +
-      '<div class="hmm-modal-overlay" data-overlay-close="join">' +
-        '<div class="hmm-modal" data-stop>' +
-          '<h3>Join the challenge</h3>' +
-          '<div class="hmm-field">' +
-            '<label>Your name</label>' +
-            '<input type="text" id="join-name-input" placeholder="e.g. Sam">' +
-          '</div>' +
-          '<div class="hmm-modal-actions">' +
-            '<button class="hmm-btn" data-action="submit-join">Enter</button>' +
-            '<button class="hmm-btn secondary" data-action="close-join">Cancel</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+  function ratingKey(n){
+    return '<button type="button" class="hmm-key' + (rateSelectedScore === n ? " active" : "") + '" data-action="select-score" data-score="' + n + '">' + n + '</button>';
   }
 
   function renderRateModal(){
@@ -664,23 +740,28 @@
       return '<button type="button" class="hmm-chip' + (rateSelectedTag === t ? " active" : "") + '" data-action="select-tag" data-tag="' + escapeHtml(t) + '">' + escapeHtml(t) + '</button>';
     }).join("");
     return '' +
-      '<div class="hmm-modal-overlay" data-overlay-close="rate">' +
+      '<div class="hmm-modal-overlay">' +
         '<div class="hmm-modal" data-stop>' +
           '<h3>' + escapeHtml(m.title) + '</h3>' +
           '<div class="hmm-field">' +
-            '<label>Your rating: <span id="rate-range-val">7</span>/10</label>' +
-            '<input type="range" id="rate-range" min="1" max="10" value="7">' +
+            '<label id="rate-score-label">' + (rateSelectedScore != null ? ("Your rating: " + rateSelectedScore + "/10") : "Your rating — pick a score") + '</label>' +
+            '<div class="hmm-key-row">' +
+              [1,2,3,4,5,6].map(ratingKey).join('') +
+              '<button type="button" class="hmm-key banned" disabled title="No sevens allowed">' + BANNED_SCORE + '</button>' +
+              [8,9,10].map(ratingKey).join('') +
+            '</div>' +
+            '<div class="hmm-key-hint">7 is banned. House rules.</div>' +
           '</div>' +
           '<div class="hmm-field">' +
             '<label>Gut reaction</label>' +
-            '<div class="hmm-chip-row">' + chips + '</div>' +
+            '<div class="hmm-chip-row" style="display:flex;flex-wrap:wrap;gap:6px">' + chips + '</div>' +
           '</div>' +
           '<div class="hmm-field">' +
             '<label>Full review (optional, spoilers ok, only unlocked for those who\'ve watched)</label>' +
             '<textarea id="rate-review" placeholder="What did you think?"></textarea>' +
           '</div>' +
           '<div class="hmm-modal-actions">' +
-            '<button class="hmm-btn" data-action="save-rate" data-id="' + m.id + '">✓ Save &amp; tick off</button>' +
+            '<button class="hmm-btn" data-action="save-rate" data-id="' + showRateMovieId + '">✓ Save &amp; tick off</button>' +
             '<button class="hmm-btn secondary" data-action="close-rate">Cancel</button>' +
           '</div>' +
         '</div>' +
@@ -699,13 +780,13 @@
     var admin = isAdmin();
     var effectiveTab = admin ? (tab === "add" ? "wall" : tab) : (isOpen ? tab : "add");
 
-    var html = renderHeader() + renderTonightStrip();
+    var html = renderHeader() + renderProgress() + renderTonightStrip();
 
     if (!me){
       html += renderNamePicker();
     } else {
       html += '' +
-        '<div class="hmm-whoami">Signed in as <strong style="color:#D9631B">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
+        '<div class="hmm-whoami">Signed in as <strong style="color:var(--pumpkin)">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
 
       if (!isOpen && !admin){
         html += '<div class="hmm-precrypt">Submissions only until October 1. Watching, ticking off and the leaderboard unlock then.</div>';
@@ -729,7 +810,7 @@
       html += '</div>';
     }
 
-    html += renderJoinModal() + renderRateModal();
+    html += renderRateModal();
 
     root.innerHTML = html;
     updateDupeWarning();
@@ -753,12 +834,16 @@
     if (label) label.textContent = dupe ? "Add anyway" : "Submit";
   }
 
+  function submitNameFromInput(){
+    var ni = document.getElementById("name-entry-input");
+    addFriend(ni ? ni.value : "");
+  }
+
   // ---- Event delegation ----
   document.getElementById("root").addEventListener("click", function(e){
     if (e.target.classList && e.target.classList.contains("hmm-modal-overlay")){
-      var which = e.target.getAttribute("data-overlay-close");
-      if (which === "join"){ showAdd = false; render(); }
-      if (which === "rate"){ showRateMovieId = null; render(); }
+      showRateMovieId = null;
+      render();
       return;
     }
 
@@ -766,17 +851,11 @@
     if (!el) return;
     var action = el.dataset.action;
 
-    if (action === "pick-name") pickName(el.dataset.name);
-    else if (action === "open-join") { showAdd = true; render(); }
-    else if (action === "close-join") { showAdd = false; render(); }
-    else if (action === "submit-join") {
-      var jn = document.getElementById("join-name-input");
-      addFriend(jn ? jn.value : "");
-    }
+    if (action === "submit-name") submitNameFromInput();
     else if (action === "not-you") { me = null; render(); }
     else if (action === "toggle-tonight") toggleTonight();
     else if (action === "set-tab") { tab = el.dataset.tab; render(); }
-    else if (action === "mark-watched") { rateSelectedTag = ""; showRateMovieId = el.dataset.id; render(); }
+    else if (action === "mark-watched") { rateSelectedTag = ""; rateSelectedScore = null; showRateMovieId = el.dataset.id; render(); }
     else if (action === "unwatch") unwatch(el.dataset.id);
     else if (action === "close-rate") { showRateMovieId = null; render(); }
     else if (action === "edit-ratings") {
@@ -792,11 +871,19 @@
       rateSelectedTag = el.dataset.tag;
       el.parentNode.querySelectorAll(".hmm-chip").forEach(function(c){ c.classList.toggle("active", c === el); });
     }
+    else if (action === "select-score") {
+      rateSelectedScore = Number(el.dataset.score);
+      el.parentNode.querySelectorAll(".hmm-key").forEach(function(k){
+        if (!k.classList.contains("banned")) k.classList.toggle("active", k === el);
+      });
+      var lbl = document.getElementById("rate-score-label");
+      if (lbl) lbl.textContent = "Your rating: " + rateSelectedScore + "/10";
+    }
     else if (action === "save-rate") {
-      var rangeEl = document.getElementById("rate-range");
+      if (rateSelectedScore == null){ alert("Pick a score first (no sevens allowed)."); return; }
       var reviewEl = document.getElementById("rate-review");
       submitWatch(el.dataset.id, {
-        rating: rangeEl ? rangeEl.value : 7,
+        rating: rateSelectedScore,
         tag: rateSelectedTag,
         review: reviewEl ? reviewEl.value : ""
       });
@@ -806,7 +893,15 @@
       var classicEl = document.getElementById("movie-classic-input");
       var title = titleEl ? titleEl.value.trim() : "";
       if (!title){ alert("Give it a title first."); return; }
-      addMovie({ title: title, classic: classicEl ? classicEl.checked : false });
+      var classic = classicEl ? classicEl.checked : false;
+      if (!classic){
+        var mySubmittedCount = moviesList().filter(function(m){ return m.submittedBy === me && !m.classic; }).length;
+        if (mySubmittedCount >= MAX_PICKS_PER_PERSON){
+          alert("You've already added your " + MAX_PICKS_PER_PERSON + " picks. You can still suggest classics though — tick the box above.");
+          return;
+        }
+      }
+      addMovie({ title: title, classic: classic });
       if (titleEl) titleEl.value = "";
       if (classicEl) classicEl.checked = false;
       updateDupeWarning();
@@ -815,9 +910,12 @@
 
   document.getElementById("root").addEventListener("input", function(e){
     if (e.target.id === "movie-title-input") updateDupeWarning();
-    if (e.target.id === "rate-range"){
-      var out = document.getElementById("rate-range-val");
-      if (out) out.textContent = e.target.value;
+  });
+
+  document.getElementById("root").addEventListener("keydown", function(e){
+    if (e.target.id === "name-entry-input" && e.key === "Enter"){
+      e.preventDefault();
+      submitNameFromInput();
     }
   });
 
