@@ -77,7 +77,20 @@
   }
   .hmm-progress-panel-head { font-family: 'Creepster', cursive; font-size: 1.3rem; color: var(--bone); letter-spacing: 0.5px; }
   .hmm-progress-panel-sub { font-size: 0.72rem; color: var(--bone2); margin-top: 8px; }
-  .hmm-progress-track.big { height: 12px; margin-top: 8px; }
+  .hmm-progress-track.big { height: 12px; }
+  .hmm-progress-wrap { position: relative; margin-top: 22px; }
+  .hmm-progress-marker {
+    position: absolute; top: 0; transform: translate(-50%, -100%);
+    font-size: 1.15rem; line-height: 1; padding-bottom: 4px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6));
+    pointer-events: none; transition: left 0.4s ease;
+  }
+  .hmm-progress-goal {
+    position: absolute; top: 0; right: -2px; transform: translateY(-100%);
+    font-size: 1.05rem; line-height: 1; padding-bottom: 4px; opacity: 0.85;
+    pointer-events: none;
+  }
+  .hmm-progress-wrap .hmm-progress-fill::after { display: none; }
   .hmm-precrypt {
     text-align: center; font-size: 0.78rem; color: var(--bone2);
     background: rgba(246,234,210,0.05); border-top: 1px solid rgba(246,234,210,0.12); border-bottom: 1px solid rgba(246,234,210,0.12);
@@ -366,6 +379,7 @@
   var MAX_PICKS_PER_PERSON = 3;
   var TONIGHT_WINDOW_MS = 1000 * 60 * 60 * 20;
   var BANNED_SCORE = 7;
+  var HORROR_MARKERS = ["🎃","🕷️","💀","🧟","🪦","🔪","🪓","👹","🧛🏻‍♂️","🦇"];
 
   function uid(){
     return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
@@ -598,6 +612,7 @@
     var classicFilled = Math.min(classicCount, RESERVED_CLASSICS);
     var totalFilled = entrantFilled + classicFilled;
     var pct = Math.round((totalFilled / TARGET_TOTAL) * 100);
+    var marker = HORROR_MARKERS[(totalFilled * 7) % HORROR_MARKERS.length];
 
     var entrantNote = nonClassicCount > TARGET_ENTRANT_PICKS
       ? (TARGET_ENTRANT_PICKS + '/' + TARGET_ENTRANT_PICKS + ' picks full — ' + (nonClassicCount - TARGET_ENTRANT_PICKS) + ' extra waiting')
@@ -609,7 +624,11 @@
     return '' +
       '<div class="hmm-progress-panel">' +
         '<div class="hmm-progress-panel-head">' + totalFilled + ' / ' + TARGET_TOTAL + ' films locked in</div>' +
-        '<div class="hmm-progress-track big"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="hmm-progress-wrap">' +
+          '<div class="hmm-progress-track big"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
+          (pct > 0 ? '<span class="hmm-progress-marker" style="left:' + pct + '%">' + marker + '</span>' : '') +
+          '<span class="hmm-progress-goal">📅</span>' +
+        '</div>' +
         '<div class="hmm-progress-panel-sub">' + entrantNote + ' · ' + classicNote + '</div>' +
       '</div>';
   }
