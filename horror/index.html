@@ -414,6 +414,7 @@
   var rateSelectedTag = "";
   var rateSelectedScore = null;
   var joinPhrase = JOIN_PHRASES[Math.floor(Math.random() * JOIN_PHRASES.length)];
+  var progressMarker = HORROR_MARKERS[Math.floor(Math.random() * HORROR_MARKERS.length)];
 
   // Every friend that has ever signed in, including the hidden admin account.
   function rawFriends(){
@@ -612,7 +613,7 @@
     var classicFilled = Math.min(classicCount, RESERVED_CLASSICS);
     var totalFilled = entrantFilled + classicFilled;
     var pct = Math.round((totalFilled / TARGET_TOTAL) * 100);
-    var marker = HORROR_MARKERS[(totalFilled * 7) % HORROR_MARKERS.length];
+    var marker = progressMarker;
 
     var entrantNote = nonClassicCount > TARGET_ENTRANT_PICKS
       ? (TARGET_ENTRANT_PICKS + '/' + TARGET_ENTRANT_PICKS + ' picks full — ' + (nonClassicCount - TARGET_ENTRANT_PICKS) + ' extra waiting')
