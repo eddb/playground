@@ -377,6 +377,13 @@
   var RESERVED_CLASSICS = 3;
   var TARGET_ENTRANT_PICKS = TARGET_TOTAL - RESERVED_CLASSICS;
   var MAX_PICKS_PER_PERSON = 3;
+  // Same person, three spellings they've used to sign in.
+  var DAVE_ALIASES = ["dlofkcil", "dave", "david"];
+  // If Dave hasn't entered his own pick by this time, these four get one bonus pick each.
+  var BONUS_UNLOCK_AT = new Date("2026-10-30T06:00:00Z"); // 6am UK time (UK is on GMT by then)
+  var BONUS_NAMES = ["oh dog", "stu", "edd", "eddie"];
+  // New sign-ups closed from today; Dave (any spelling) can still join whenever he likes.
+  var NEW_SIGNUPS_OPEN_FOR = DAVE_ALIASES;
   var TONIGHT_WINDOW_MS = 1000 * 60 * 60 * 20;
   var BANNED_SCORE = 7;
   var HORROR_MARKERS = ["🎃","🕷️","💀","🧟","🪦","🔪","🪓","👹","🧛🏻‍♂️","🦇"];
@@ -454,6 +461,20 @@
     return isAdminName(me);
   }
 
+  function daveHasEntered(){
+    return moviesList().some(function(m){
+      return DAVE_ALIASES.indexOf((m.submittedBy || "").trim().toLowerCase()) !== -1;
+    });
+  }
+
+  function maxPicksFor(name){
+    var lower = (name || "").trim().toLowerCase();
+    if (Date.now() >= BONUS_UNLOCK_AT.getTime() && BONUS_NAMES.indexOf(lower) !== -1 && !daveHasEntered()){
+      return MAX_PICKS_PER_PERSON + 1;
+    }
+    return MAX_PICKS_PER_PERSON;
+  }
+
   // ---- Mutations ----
   function pickName(name){
     me = name;
@@ -466,6 +487,11 @@
     if (!trimmed) return;
     var existing = rawFriends().find(function(f){ return f.toLowerCase() === trimmed.toLowerCase(); });
     if (existing){ pickName(existing); return; }
+    var lower = trimmed.toLowerCase();
+    if (!isAdminName(trimmed) && NEW_SIGNUPS_OPEN_FOR.indexOf(lower) === -1){
+      alert("New sign-ups are closed for this round.");
+      return;
+    }
     var key = friendKey(trimmed);
     db.ref(ROOT + "friends/" + key).set(trimmed).then(function(){
       pickName(trimmed);
@@ -769,13 +795,14 @@
     var mySubmitted = movies.filter(function(m){ return m.submittedBy === me && !m.classic; }).length;
     var nonClassicCount = movies.filter(function(m){ return !m.classic; }).length;
     var remaining = Math.max(0, TARGET_ENTRANT_PICKS - nonClassicCount);
-    var capLeft = Math.max(0, MAX_PICKS_PER_PERSON - mySubmitted);
+    var myMaxPicks = maxPicksFor(me);
+    var capLeft = Math.max(0, myMaxPicks - mySubmitted);
 
     return '' +
       '<div class="hmm-panel">' +
         '<h3 class="hmm-display" style="color:var(--bone);margin-top:0">Nominate a film</h3>' +
         '<div class="hmm-card-meta" style="margin-bottom:16px">' +
-          "You've used " + mySubmitted + ' of your ' + MAX_PICKS_PER_PERSON + ' picks' +
+          "You've used " + mySubmitted + ' of your ' + myMaxPicks + ' picks' +
           (capLeft > 0 ? ' (' + capLeft + ' left).' : ' — that\'s your lot for regular picks.') +
           ' Classics are unlimited — suggest as many as you like, though only ' + RESERVED_CLASSICS + ' will make the final cut. ' +
           'We need ' + TARGET_ENTRANT_PICKS + ' friend-picked films (' + remaining + ' more needed) plus ' + RESERVED_CLASSICS + ' classics for ' + TARGET_TOTAL + ' total this month.' +
@@ -972,8 +999,9 @@
       var classic = classicEl ? classicEl.checked : false;
       if (!classic){
         var mySubmittedCount = moviesList().filter(function(m){ return m.submittedBy === me && !m.classic; }).length;
-        if (mySubmittedCount >= MAX_PICKS_PER_PERSON){
-          alert("You've already added your " + MAX_PICKS_PER_PERSON + " picks. You can still suggest classics though — tick the box above.");
+        var myMax = maxPicksFor(me);
+        if (mySubmittedCount >= myMax){
+          alert("You've already added your " + myMax + " picks. You can still suggest classics though — tick the box above.");
           return;
         }
       }
