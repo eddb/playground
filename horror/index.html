@@ -44,7 +44,7 @@
   .hmm-serif { font-family: 'Special Elite', monospace; }
   .hmm-header {
     text-align: center;
-    padding: 32px 16px 22px;
+    padding: 32px 32px 22px;
     border-bottom: 3px solid var(--pumpkin);
     box-shadow: 0 4px 0 var(--blood);
     position: relative;
@@ -58,9 +58,8 @@
     height: auto;
     margin: 8px auto 0;
     filter:
-      drop-shadow(3px 3px 0 var(--blood))
-      drop-shadow(6px 6px 0 var(--ink))
-      drop-shadow(0 0 36px rgba(217,80,63,0.4));
+      drop-shadow(0 5px 10px rgba(0,0,0,0.55))
+      drop-shadow(0 0 30px rgba(207,31,38,0.35));
   }
   .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Special Elite', monospace; font-weight: bold; letter-spacing: 0.3px; }
   .hmm-countdown {
@@ -94,13 +93,13 @@
   .hmm-precrypt {
     text-align: center; font-size: 0.78rem; color: var(--bone2);
     background: rgba(246,234,210,0.05); border-top: 1px solid rgba(246,234,210,0.12); border-bottom: 1px solid rgba(246,234,210,0.12);
-    padding: 8px 16px; margin-top: 8px;
+    padding: 8px 32px; margin-top: 8px;
   }
   .hmm-nav {
     display: flex; justify-content: center; gap: 10px;
-    padding: 20px 16px; flex-wrap: wrap;
+    padding: 20px 32px; flex-wrap: wrap;
   }
-  .hmm-section { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+  .hmm-section { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
   .hmm-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 22px; margin-top: 20px;
@@ -301,7 +300,7 @@
   .hmm-key-hint { font-size: 0.68rem; color: var(--bone2); opacity: 0.7; margin-top: 6px; }
 
   .hmm-modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-  .hmm-whoami { text-align: center; padding: 10px 16px; font-size: 0.75rem; color: var(--bone2); }
+  .hmm-whoami { text-align: center; padding: 10px 32px; font-size: 0.75rem; color: var(--bone2); }
   .hmm-whoami button { background: none; border: none; color: var(--pumpkin); text-decoration: underline; cursor: pointer; font-family: inherit; }
   .hmm-panel { background: var(--ink2); border: 1px solid rgba(246,234,210,0.18); box-shadow: 4px 4px 0 rgba(0,0,0,0.35); padding: 22px; border-radius: 3px; margin-top: 20px; }
   .hmm-leaderrow { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(246,234,210,0.08); }
@@ -309,7 +308,7 @@
   .hmm-leaderrow .track { flex: 1; height: 8px; background: rgba(246,234,210,0.1); border-radius: 4px; overflow: hidden; }
   .hmm-leaderrow .track-fill { height: 100%; background: var(--toxic); }
   .hmm-leaderrow .pct { width: 44px; text-align: right; font-size: 0.78rem; color: var(--bone2); }
-  .hmm-wheel-stage { text-align: center; padding: 30px 16px; }
+  .hmm-wheel-stage { text-align: center; padding: 30px 32px; }
   .hmm-wheel-card {
     max-width: 280px; margin: 20px auto 0; padding: 18px; background: var(--ink2);
     border: 2px solid var(--pumpkin); border-radius: 4px;
@@ -318,13 +317,13 @@
   .hmm-wheel-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 2px; margin-bottom: 10px; }
   .hmm-tonight-strip {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
-    padding: 12px 16px; margin-top: 10px; font-size: 0.78rem; color: var(--bone2);
+    padding: 12px 32px; margin-top: 10px; font-size: 0.78rem; color: var(--bone2);
   }
   .hmm-tonight-pill {
     background: rgba(95,131,160,0.18); border: 1px solid var(--toxic); color: var(--toxic);
     padding: 3px 10px; border-radius: 12px; font-size: 0.72rem;
   }
-  .hmm-empty { text-align: center; padding: 40px 16px; color: var(--bone2); opacity: 0.7; }
+  .hmm-empty { text-align: center; padding: 40px 32px; color: var(--bone2); opacity: 0.7; }
   .hmm-footer {
     max-width: 520px; margin: 46px auto 0; padding: 16px 20px 0;
     border-top: 1px solid rgba(246,234,210,0.12);
@@ -636,7 +635,7 @@
       '<div class="hmm-header">' +
         '<div class="hmm-header-icon">💀</div>' +
         '<img class="hmm-logo" src="horror-month-logo.png" alt="Horror Month">' +
-        '<div class="hmm-sub hmm-serif">A closed-circle October challenge. Watch at your own pace, no order required.</div>' +
+        '<div class="hmm-sub hmm-serif">A closed-circle October challenge.<br>Watch at your own pace,<br>no order required.</div>' +
         '<div class="hmm-countdown">🔥 ' +
           (daysLeft > 0 ? (daysLeft + " days until Halloween") : "It's Halloween. Godspeed.") +
         '</div>' +
@@ -761,7 +760,7 @@
     var movies = moviesList();
     var html = '' +
       '<div class="hmm-wheel-stage">' +
-        '<p class="hmm-serif">No fixed order. Spin for a fair pick, weighted so the same person\'s picks don\'t dominate two in a row.</p>' +
+        '<p class="hmm-serif">No fixed order.<br>Spin for a fair pick,<br>weighted so the same person\'s picks don\'t dominate two in a row.</p>' +
         '<button class="hmm-btn" style="margin:0 auto" data-action="spin"' + (spinning || !movies.length ? " disabled" : "") + '>' +
           (spinning ? "Spinning the reel..." : "Spin for tonight's pick") +
         '</button>';
@@ -901,7 +900,7 @@
     var admin = isAdmin();
     var effectiveTab = admin ? (tab === "add" ? "wall" : tab) : tab;
 
-    var html = renderHeader() + renderProgress() + renderTonightStrip();
+    var html = renderHeader() + renderTonightStrip();
 
     if (!me){
       html += renderNamePicker();
@@ -916,11 +915,20 @@
         html += '<div class="hmm-precrypt">Admin view: you can see everything and manage posters/ratings, but movie submissions come from the group.</div>';
       }
 
+      // Movies are locked in, so the submit tab is hidden by default. It stays reachable
+      // for Dave (any spelling, so he can still add his film whenever he shows up) and
+      // for anyone currently sitting on an unclaimed bonus pick (see maxPicksFor).
+      var showSubmitTab = !admin && (
+        DAVE_ALIASES.indexOf((me || "").trim().toLowerCase()) !== -1 ||
+        maxPicksFor(me) > MAX_PICKS_PER_PERSON
+      );
+      if (effectiveTab === "add" && !showSubmitTab) effectiveTab = "wall";
+
       html += '<div class="hmm-nav">' +
         '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '" data-action="set-tab" data-tab="wall">Poster Wall</button>' +
         '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '" data-action="set-tab" data-tab="next">What\'s Next</button>' +
         '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '" data-action="set-tab" data-tab="board">Leaderboard</button>' +
-        (!admin ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">Submit a Movie</button>' : "") +
+        (showSubmitTab ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">Submit a Movie</button>' : "") +
         '</div>';
 
       html += '<div class="hmm-section">';
