@@ -6,6 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Horror Month</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%92%80</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +61,11 @@
     filter:
       drop-shadow(0 5px 10px rgba(0,0,0,0.55))
       drop-shadow(0 0 30px rgba(207,31,38,0.35));
+  }
+  @media (max-width: 640px) {
+    /* height scales with width since it's height:auto, so shrinking width to
+       65% gives the logo 65% of its previous rendered height on mobile */
+    .hmm-logo { width: 65%; }
   }
   .hmm-sub { color: var(--bone2); font-size: 0.85rem; margin-top: 10px; font-family: 'Special Elite', monospace; font-weight: bold; letter-spacing: 0.3px; }
   .hmm-countdown {
@@ -635,7 +641,7 @@
       '<div class="hmm-header">' +
         '<div class="hmm-header-icon">💀</div>' +
         '<img class="hmm-logo" src="horror-month-logo.png" alt="Horror Month">' +
-        '<div class="hmm-sub hmm-serif">A closed-circle October challenge.<br>Watch at your own pace,<br>no order required.</div>' +
+        (!me ? '<div class="hmm-sub hmm-serif">A closed-circle October challenge.<br>Watch at your own pace,<br>no order required.</div>' : '') +
         '<div class="hmm-countdown">🔥 ' +
           (daysLeft > 0 ? (daysLeft + " days until Halloween") : "It's Halloween. Godspeed.") +
         '</div>' +
