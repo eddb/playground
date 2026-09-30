@@ -195,6 +195,9 @@
     .hmm-progress-track { animation: none; }
   }
   .hmm-locked { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--bone2); opacity: 0.7; }
+  .hmm-card-links { display: flex; gap: 12px; font-size: 0.7rem; }
+  .hmm-card-links a { color: var(--toxic); text-decoration: none; }
+  .hmm-card-links a:hover { text-decoration: underline; }
   .hmm-modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center;
     z-index: 50; padding: 16px;
@@ -394,6 +397,15 @@
   function daysUntil(target){
     var ms = target - new Date();
     return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+  }
+  function challengeIsOpen(){
+    return new Date() >= CHALLENGE_OPENS;
+  }
+  function imdbSearchUrl(title){
+    return "https://www.imdb.com/find/?q=" + encodeURIComponent(title);
+  }
+  function letterboxdSearchUrl(title){
+    return "https://letterboxd.com/search/" + encodeURIComponent(title) + "/";
   }
   function escapeHtml(s){
     return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
@@ -696,6 +708,7 @@
     var ratings = friends.map(function(f){ return watchFor(m.id, f); }).filter(function(w){ return w && w.watched; });
     var avgFriendScore = ratings.length ? (ratings.reduce(function(s, r){ return s + Number(r.rating); }, 0) / ratings.length).toFixed(1) : null;
     var pct = friends.length ? (watchedCount / friends.length) * 100 : 0;
+    var canRate = challengeIsOpen() || isAdmin();
 
     return '' +
       '<div class="hmm-card">' +
@@ -724,10 +737,16 @@
           (iWatched
             ? '' +
               '<div class="hmm-card-meta" style="color:var(--toxic)">Group score: ' + (avgFriendScore != null ? avgFriendScore : "—") + '/10 from ' + ratings.length + ' watcher' + (ratings.length === 1 ? "" : "s") + '</div>' +
+              '<div class="hmm-card-links">' +
+                '<a href="' + imdbSearchUrl(m.title) + '" target="_blank" rel="noopener">IMDb ↗</a>' +
+                '<a href="' + letterboxdSearchUrl(m.title) + '" target="_blank" rel="noopener">Letterboxd ↗</a>' +
+              '</div>' +
               '<button class="hmm-btn danger" data-action="unwatch" data-id="' + m.id + '">Undo tick</button>'
-            : '' +
-              '<div class="hmm-locked">🔒 Reviews locked until you watch it</div>' +
-              '<button class="hmm-btn" data-action="mark-watched" data-id="' + m.id + '">Mark watched</button>') +
+            : canRate
+              ? '' +
+                '<div class="hmm-locked">🔒 Reviews locked until you watch it</div>' +
+                '<button class="hmm-btn" data-action="mark-watched" data-id="' + m.id + '">Mark watched</button>'
+              : '<div class="hmm-locked">🔒 Scores open October 1</div>') +
         '</div>' +
       '</div>';
   }
@@ -878,9 +897,9 @@
       return;
     }
 
-    var isOpen = new Date() >= CHALLENGE_OPENS;
+    var isOpen = challengeIsOpen();
     var admin = isAdmin();
-    var effectiveTab = admin ? (tab === "add" ? "wall" : tab) : (isOpen ? tab : "add");
+    var effectiveTab = admin ? (tab === "add" ? "wall" : tab) : tab;
 
     var html = renderHeader() + renderProgress() + renderTonightStrip();
 
@@ -891,16 +910,16 @@
         '<div class="hmm-whoami">Signed in as <strong style="color:var(--toxic)">' + escapeHtml(me) + '</strong> · <button data-action="not-you">not you?</button></div>';
 
       if (!isOpen && !admin){
-        html += '<div class="hmm-precrypt">Submissions only until October 1. Watching, ticking off and the leaderboard unlock then.</div>';
+        html += '<div class="hmm-precrypt">Browse away — ticking films off and adding your score opens October 1.</div>';
       }
       if (admin){
         html += '<div class="hmm-precrypt">Admin view: you can see everything and manage posters/ratings, but movie submissions come from the group.</div>';
       }
 
       html += '<div class="hmm-nav">' +
-        '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="wall">Poster Wall</button>' +
-        '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="next">What\'s Next</button>' +
-        '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '"' + (!isOpen && !admin ? " disabled" : "") + ' data-action="set-tab" data-tab="board">Leaderboard</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "wall" ? " active" : "") + '" data-action="set-tab" data-tab="wall">Poster Wall</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "next" ? " active" : "") + '" data-action="set-tab" data-tab="next">What\'s Next</button>' +
+        '<button class="hmm-tab' + (effectiveTab === "board" ? " active" : "") + '" data-action="set-tab" data-tab="board">Leaderboard</button>' +
         (!admin ? '<button class="hmm-tab' + (effectiveTab === "add" ? " active" : "") + '" data-action="set-tab" data-tab="add">Submit a Movie</button>' : "") +
         '</div>';
 
