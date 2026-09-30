@@ -759,7 +759,10 @@
   function renderWallTab(){
     var movies = moviesList();
     if (!movies.length) return '<div class="hmm-empty">No movies yet. Be the first to nail one to the wall.</div>';
-    return '<div class="hmm-grid">' + movies.map(renderMovieCard).join("") + '</div>';
+    var alphabetical = movies.slice().sort(function(a, b){
+      return a.title.trim().toLowerCase().localeCompare(b.title.trim().toLowerCase());
+    });
+    return '<div class="hmm-grid">' + alphabetical.map(renderMovieCard).join("") + '</div>';
   }
 
   function renderNextTab(){
@@ -921,13 +924,11 @@
         html += '<div class="hmm-precrypt">Admin view: you can see everything and manage posters/ratings, but movie submissions come from the group.</div>';
       }
 
-      // Movies are locked in, so the submit tab is hidden by default. It stays reachable
-      // for Dave (any spelling, so he can still add his film whenever he shows up) and
-      // for anyone currently sitting on an unclaimed bonus pick (see maxPicksFor).
-      var showSubmitTab = !admin && (
-        DAVE_ALIASES.indexOf((me || "").trim().toLowerCase()) !== -1 ||
-        maxPicksFor(me) > MAX_PICKS_PER_PERSON
-      );
+      // Movies are locked in, so the submit tab is hidden by default. Dave has
+      // entered his film now, so he no longer gets the standing exemption --
+      // it only reappears for anyone currently sitting on an unclaimed bonus
+      // pick (see maxPicksFor).
+      var showSubmitTab = !admin && maxPicksFor(me) > MAX_PICKS_PER_PERSON;
       if (effectiveTab === "add" && !showSubmitTab) effectiveTab = "wall";
 
       html += '<div class="hmm-nav">' +
