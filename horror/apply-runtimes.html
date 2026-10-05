@@ -86,7 +86,11 @@
   ];
 
   function normalize(title){
-    return String(title || "").trim().toLowerCase().replace(/\s*\(\d{4}\)\s*$/, "").trim();
+    return String(title || "").trim().toLowerCase()
+      .replace(/\s*\(\d{4}\)\s*$/, "")
+      .replace(/&/g, "and")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   var rowsEl = document.getElementById("rows");
