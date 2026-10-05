@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Horror Month — Titles</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px 16px;
+    background: #161412; color: #F6EAD2;
+    font-family: "Courier New", Courier, monospace;
+  }
+  h1 { font-size: 1.1rem; font-weight: normal; margin: 0 0 4px; }
+  .count { color: #A69A87; font-size: 0.85rem; margin-bottom: 16px; }
+  textarea {
+    width: 100%; max-width: 600px; min-height: 60vh;
+    background: #211E1A; color: #F6EAD2;
+    border: 1px solid rgba(246,234,210,0.25);
+    border-radius: 4px; padding: 14px;
+    font-family: inherit; font-size: 1rem; line-height: 1.6;
+    resize: vertical;
+  }
+  button {
+    margin-top: 12px; display: block;
+    background: #211E1A; color: #F6EAD2;
+    border: 1px solid rgba(246,234,210,0.25);
+    border-radius: 4px; padding: 10px 18px;
+    font-family: inherit; font-size: 0.9rem; cursor: pointer;
+  }
+  button:active { transform: translateY(1px); }
+  .status { color: #A69A87; font-size: 0.8rem; margin-top: 8px; }
+</style>
+</head>
+<body>
+<h1>Horror Month — movie titles</h1>
+<div class="count" id="count">Loading…</div>
+<textarea id="list" readonly></textarea>
+<button id="copyBtn">Copy to clipboard</button>
+<div class="status" id="status"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
+<script>
+(function(){
+  "use strict";
+  var firebaseConfig = {
+    apiKey: "AIzaSyDrbLHnvhhu_XYcyXO2Om8fN4bff8QkxOo",
+    authDomain: "tear-7c4ae.firebaseapp.com",
+    databaseURL: "https://tear-7c4ae-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tear-7c4ae",
+    storageBucket: "tear-7c4ae.firebasestorage.app",
+    messagingSenderId: "1001513131517",
+    appId: "1:1001513131517:web:f5e3911cf1e06b68a70d94"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.database();
+
+  db.ref("horror/movies").once("value").then(function(snap){
+    var val = snap.val() || {};
+    var titles = Object.keys(val).map(function(k){ return val[k].title; })
+      .filter(Boolean)
+      .sort(function(a, b){ return a.trim().toLowerCase().localeCompare(b.trim().toLowerCase()); });
+    document.getElementById("count").textContent = titles.length + " title" + (titles.length === 1 ? "" : "s");
+    document.getElementById("list").value = titles.join("\n");
+  }).catch(function(err){
+    document.getElementById("count").textContent = "Could not load: " + (err && err.message ? err.message : "error");
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    var ta = document.getElementById("list");
+    ta.select();
+    navigator.clipboard.writeText(ta.value).then(function(){
+      document.getElementById("status").textContent = "Copied.";
+    }).catch(function(){
+      document.getElementById("status").textContent = "Select-all worked, but auto-copy failed -- Ctrl/Cmd+C to copy.";
+    });
+  });
+})();
+</script>
+</body>
+</html>
