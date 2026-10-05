@@ -23,6 +23,13 @@
   .status.applied { color: #7FA66B; }
   .status.missing { color: #D9503F; }
   .status.skipped { color: #A69A87; }
+  select {
+    background: #211E1A; color: #F6EAD2;
+    border: 1px solid rgba(246,234,210,0.3);
+    border-radius: 4px; padding: 5px 7px;
+    font-family: inherit; font-size: 0.78rem;
+    max-width: 100%;
+  }
   button {
     background: #211E1A; color: #F6EAD2;
     border: 1px solid rgba(246,234,210,0.25);
@@ -32,17 +39,24 @@
   button:active { transform: translateY(1px); }
   button:disabled { opacity: 0.4; cursor: not-allowed; }
   #applyBtn { margin: 18px 0; padding: 10px 18px; font-size: 0.9rem; display: block; }
-  .choice-row button { margin-right: 6px; }
+  .choice-row button { margin-right: 6px; margin-top: 6px; }
   #log { font-size: 0.78rem; color: #A69A87; white-space: pre-wrap; margin-top: 16px; }
+  details { margin-top: 28px; font-size: 0.78rem; color: #A69A87; }
+  details pre { white-space: pre-wrap; color: #F6EAD2; }
 </style>
 </head>
 <body>
 <h1>Horror Month — apply runtimes</h1>
-<p class="hint">Matches titles below against the live movie list and writes the runtime field. Nothing is written until you click Apply. "The Hills Have Eyes" has two possible runtimes -- pick one with its own button.</p>
+<p class="hint">Matches titles below against the live movie list and writes the runtime field. Nothing is written until you click Apply. If a title didn't auto-match (spelling/punctuation difference), pick the right one from its dropdown -- that overrides the auto-match. "The Hills Have Eyes" also needs you to pick which runtime applies.</p>
 
 <table id="rows"></table>
 <button id="applyBtn">Apply all matched runtimes</button>
 <div id="log"></div>
+
+<details>
+  <summary>Raw titles currently in the database (for debugging mismatches)</summary>
+  <pre id="rawList">Loading…</pre>
+</details>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
@@ -97,6 +111,8 @@
   var logEl = document.getElementById("log");
   var applyBtn = document.getElementById("applyBtn");
   var liveMovies = {}; // normalized title -> {id, title, runtime}
+  var liveList = [];   // [{id, title, runtime}], alphabetical, for dropdowns
+  var overrides = {};  // rowKey -> movie id chosen manually
 
   function log(msg){
     logEl.textContent += msg + "\n";
@@ -110,35 +126,61 @@
     return null;
   }
 
+  function resolvedMovie(rowKey, refTitle){
+    if (overrides[rowKey]){
+      return liveList.filter(function(m){ return m.id === overrides[rowKey]; })[0] || null;
+    }
+    return findMatch(refTitle);
+  }
+
+  function dropdownHtml(rowKey){
+    var opts = '<option value="">-- pick the right movie --</option>';
+    liveList.forEach(function(m){
+      opts += '<option value="' + m.id + '">' + m.title.replace(/</g, "&lt;") + '</option>';
+    });
+    return '<select data-override="' + rowKey + '">' + opts + '</select>';
+  }
+
   function renderRows(){
     var html = "<tr><th>Title</th><th>Runtime</th><th>Match</th></tr>";
-    RUNTIMES.forEach(function(entry){
+    RUNTIMES.forEach(function(entry, i){
       var title = entry[0], minutes = entry[1];
-      var match = findMatch(title);
-      html += "<tr data-title=\"" + title.replace(/"/g, "&quot;") + "\">" +
+      var rowKey = "r" + i;
+      var match = resolvedMovie(rowKey, title);
+      html += "<tr>" +
         "<td>" + title + "</td>" +
         "<td>" + minutes + " min</td>" +
         "<td class=\"status " + (match ? "matched" : "missing") + "\">" +
-          (match ? ("found: \"" + match.title + "\"" + (match.runtime != null ? " (already has " + match.runtime + "m)" : "")) : "no match in live list") +
+          (match
+            ? ("found: \"" + match.title + "\"" + (match.runtime != null ? " (already has " + match.runtime + "m)" : ""))
+            : ("no auto-match<br>" + dropdownHtml(rowKey))) +
         "</td>" +
       "</tr>";
     });
 
-    var ambigMatch = findMatch(AMBIGUOUS_TITLE);
+    var ambigRowKey = "ambig";
+    var ambigMatch = resolvedMovie(ambigRowKey, AMBIGUOUS_TITLE);
     html += "<tr><td>" + AMBIGUOUS_TITLE + "</td><td colspan=\"2\">";
     if (ambigMatch){
       html += "found: \"" + ambigMatch.title + "\"" + (ambigMatch.runtime != null ? " (already has " + ambigMatch.runtime + "m)" : "") +
-        "<div class=\"choice-row\" style=\"margin-top:6px\">" +
+        "<div class=\"choice-row\">" +
         AMBIGUOUS_OPTIONS.map(function(o){
           return '<button data-ambig-minutes="' + o.minutes + '">' + o.label + '</button>';
         }).join("") +
         "</div>";
     } else {
-      html += '<span class="status missing">no match in live list</span>';
+      html += "no auto-match<br>" + dropdownHtml(ambigRowKey);
     }
     html += "</td></tr>";
 
     rowsEl.innerHTML = html;
+
+    rowsEl.querySelectorAll("select[data-override]").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        overrides[sel.dataset.override] = sel.value || null;
+        renderRows();
+      });
+    });
 
     rowsEl.querySelectorAll("[data-ambig-minutes]").forEach(function(btn){
       btn.addEventListener("click", function(){
@@ -154,9 +196,9 @@
   applyBtn.addEventListener("click", function(){
     applyBtn.disabled = true;
     var writes = [];
-    RUNTIMES.forEach(function(entry){
+    RUNTIMES.forEach(function(entry, i){
       var title = entry[0], minutes = entry[1];
-      var match = findMatch(title);
+      var match = resolvedMovie("r" + i, title);
       if (match){
         writes.push(
           db.ref("horror/movies/" + match.id).update({ runtime: minutes }).then(function(){
@@ -166,7 +208,7 @@
           })
         );
       } else {
-        log("Skipped (no match): \"" + title + "\"");
+        log("Skipped (no match, no selection): \"" + title + "\"");
       }
     });
     Promise.all(writes).then(function(){
@@ -179,8 +221,14 @@
     var val = snap.val() || {};
     Object.keys(val).forEach(function(id){
       var m = val[id];
-      liveMovies[normalize(m.title)] = { id: id, title: m.title, runtime: m.runtime };
+      var entry = { id: id, title: m.title, runtime: m.runtime };
+      liveMovies[normalize(m.title)] = entry;
+      liveList.push(entry);
     });
+    liveList.sort(function(a, b){ return normalize(a.title).localeCompare(normalize(b.title)); });
+    document.getElementById("rawList").textContent = liveList.map(function(m){
+      return m.title + (m.runtime != null ? "  [runtime: " + m.runtime + "m]" : "");
+    }).join("\n");
     renderRows();
   }).catch(function(err){
     log("Could not load live movie list: " + (err && err.message ? err.message : err));
