@@ -174,6 +174,7 @@
   .hmm-rating-badge .label { font-size: 0.58rem; letter-spacing: 0.4px; opacity: 0.85; text-transform: uppercase; }
   .hmm-rating-badge.imdb { background: #F5C518; color: #000; }
   .hmm-rating-badge.rt { background: #FA320A; color: #fff; }
+  .hmm-rating-badge.runtime { background: var(--ink); color: var(--bone2); border: 1px solid rgba(246,234,210,0.25); }
   .hmm-rating-edit { background: none; border: none; color: var(--bone2); cursor: pointer; padding: 2px; font-size: 0.8rem; }
   .hmm-rating-edit:hover { color: var(--bone); }
   .hmm-progress-track {
@@ -539,11 +540,19 @@
     });
   }
 
-  function updateMovieRatings(id, imdb, rt){
+  function updateMovieRatings(id, imdb, rt, runtime){
     db.ref(ROOT + "movies/" + id).update({
       imdb: imdb ? Number(imdb) : null,
-      rt: rt ? Number(rt) : null
+      rt: rt ? Number(rt) : null,
+      runtime: runtime ? Number(runtime) : null
     });
+  }
+
+  function formatRuntime(mins){
+    if (mins == null) return null;
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    return (h > 0 ? h + "h " : "") + m + "m";
   }
 
   function submitWatch(movieId, data){
@@ -735,6 +744,7 @@
           '<div class="hmm-rating-badges">' +
             '<span class="hmm-rating-badge imdb"><span class="label">IMDb</span>' + (m.imdb != null ? m.imdb : "—") + '</span>' +
             '<span class="hmm-rating-badge rt"><span class="label">🍅 RT</span>' + (m.rt != null ? m.rt + '%' : "—") + '</span>' +
+            (m.runtime != null ? '<span class="hmm-rating-badge runtime">⏱ ' + formatRuntime(m.runtime) + '</span>' : "") +
             (isAdmin() ? '<button class="hmm-rating-edit" data-action="edit-ratings" data-id="' + m.id + '">Edit</button>' : "") +
           '</div>' +
           '<div class="hmm-progress-track"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
@@ -1001,7 +1011,9 @@
       if (imdb === null) return;
       var rt = prompt("Rotten Tomatoes % (e.g. 88)", mv.rt != null ? mv.rt : "");
       if (rt === null) return;
-      updateMovieRatings(el.dataset.id, imdb, rt);
+      var runtime = prompt("Runtime in minutes (e.g. 107)", mv.runtime != null ? mv.runtime : "");
+      if (runtime === null) return;
+      updateMovieRatings(el.dataset.id, imdb, rt, runtime);
     }
     else if (action === "spin") spinWheel();
     else if (action === "select-tag") {
