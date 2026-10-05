@@ -106,6 +106,12 @@
     padding: 20px 32px; flex-wrap: wrap;
   }
   .hmm-section { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  .hmm-sort-row { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 0.78rem; color: var(--bone2); }
+  .hmm-sort-row select {
+    background: linear-gradient(180deg, #38342E 0%, var(--ink2) 55%, #17140F 100%);
+    color: var(--bone); border: 1px solid rgba(246,234,210,0.3);
+    border-radius: 4px; padding: 6px 10px; font-family: 'Special Elite', monospace; font-size: 0.78rem;
+  }
   .hmm-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 22px; margin-top: 20px;
@@ -433,6 +439,7 @@
   // ---- Local/UI state ----
   var me = localStorage.getItem(NAME_KEY) || null;
   var tab = "wall";
+  var wallSort = "alpha";
   var showRateMovieId = null;
   var spinResult = null;
   var spinning = false;
@@ -766,13 +773,46 @@
       '</div>';
   }
 
+  var WALL_SORTS = {
+    alpha: { label: "Alphabetical (A-Z)" },
+    imdb: { label: "IMDb (highest first)" },
+    rt: { label: "Rotten Tomatoes (highest first)" },
+    runtime: { label: "Runtime (shortest first)" }
+  };
+
+  function sortMovies(movies, mode){
+    var sorted = movies.slice();
+    if (mode === "imdb" || mode === "rt" || mode === "runtime"){
+      var field = mode;
+      var ascending = mode === "runtime"; // ratings: highest first, runtime: shortest first
+      sorted.sort(function(a, b){
+        var av = a[field], bv = b[field];
+        if (av == null && bv == null) return 0;
+        if (av == null) return 1;  // missing values sink to the bottom regardless of direction
+        if (bv == null) return -1;
+        return ascending ? (av - bv) : (bv - av);
+      });
+    } else {
+      sorted.sort(function(a, b){
+        return a.title.trim().toLowerCase().localeCompare(b.title.trim().toLowerCase());
+      });
+    }
+    return sorted;
+  }
+
   function renderWallTab(){
     var movies = moviesList();
-    if (!movies.length) return '<div class="hmm-empty">No movies yet. Be the first to nail one to the wall.</div>';
-    var alphabetical = movies.slice().sort(function(a, b){
-      return a.title.trim().toLowerCase().localeCompare(b.title.trim().toLowerCase());
-    });
-    return '<div class="hmm-grid">' + alphabetical.map(renderMovieCard).join("") + '</div>';
+    var sortRow = '<div class="hmm-sort-row">' +
+      '<label for="wall-sort-select">Sort by</label>' +
+      '<select id="wall-sort-select">' +
+      Object.keys(WALL_SORTS).map(function(key){
+        return '<option value="' + key + '"' + (key === wallSort ? " selected" : "") + '>' + WALL_SORTS[key].label + '</option>';
+      }).join("") +
+      '</select>' +
+    '</div>';
+    if (!movies.length) return sortRow + '<div class="hmm-empty">No movies yet. Be the first to nail one to the wall.</div>';
+    var sorted = sortMovies(movies, wallSort);
+    return sortRow + '<div class="hmm-grid">' + sorted.map(renderMovieCard).join("") + '</div>';
   }
 
   function renderNextTab(){
@@ -1072,6 +1112,10 @@
   document.getElementById("root").addEventListener("change", function(e){
     if (e.target.hasAttribute && e.target.hasAttribute("data-admin-poster")){
       handleAdminPoster(e.target.files[0], e.target.dataset.id);
+    }
+    if (e.target.id === "wall-sort-select"){
+      wallSort = e.target.value;
+      render();
     }
   });
 
