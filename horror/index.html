@@ -419,6 +419,10 @@
   function letterboxdSearchUrl(title){
     return "https://letterboxd.com/search/" + encodeURIComponent(title) + "/";
   }
+  function justwatchSearchUrl(title){
+    var clean = String(title || "").replace(/\s*\(\d{4}\)\s*$/, "").trim();
+    return "https://www.justwatch.com/uk/search?q=" + encodeURIComponent(clean);
+  }
   function escapeHtml(s){
     return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
@@ -753,6 +757,9 @@
             '<span class="hmm-rating-badge rt"><span class="label">🍅 RT</span>' + (m.rt != null ? m.rt + '%' : "—") + '</span>' +
             (m.runtime != null ? '<span class="hmm-rating-badge runtime">⏱ ' + formatRuntime(m.runtime) + '</span>' : "") +
             (isAdmin() ? '<button class="hmm-rating-edit" data-action="edit-ratings" data-id="' + m.id + '">Edit</button>' : "") +
+          '</div>' +
+          '<div class="hmm-card-links">' +
+            '<a href="' + justwatchSearchUrl(m.title) + '" target="_blank" rel="noopener">Where to watch ↗</a>' +
           '</div>' +
           '<div class="hmm-progress-track"><div class="hmm-progress-fill" style="width:' + pct + '%"></div></div>' +
           '<div class="hmm-card-meta">' + watchedCount + '/' + friends.length + ' watched</div>' +
